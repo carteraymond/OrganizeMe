@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../api-docs/swagger-output.json';
 import path from 'path';
-import { createUser } from '../controllers/userController';
+import userRouter from './user';
 
 const router = express.Router();
 
@@ -14,6 +14,6 @@ router.get('/', (req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
 });
 
-router.post('/user', createUser);
+router.use('/', userRouter);
 
 export default router;
