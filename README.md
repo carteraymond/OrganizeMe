@@ -6,9 +6,9 @@ OrganizeMe is a task management app designed to help users stay organized and pr
 
 ## Collaborators
 
-Carter Raymond <br>
-Johnny Sanabria <br>
-Julieta White <br>
+Carter Raymond  
+Johnny Sanabria  
+Julieta White  
 
 ## Development server
 
@@ -20,7 +20,8 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.  
+Run `ng build --configuration production` to build the project for production.
 
 ## Running unit tests
 

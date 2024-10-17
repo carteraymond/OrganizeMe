@@ -11,3 +11,5 @@ const __dirname = path.resolve(path.dirname(''));
 router.get('/', (req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
 });
+
+export default router;

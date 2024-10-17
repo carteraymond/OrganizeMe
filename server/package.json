@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsx server.ts"
+    "start": "tsx server.ts",
+    "swagger": "node ./swagger.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "mongoose": "^8.7.1",
+    "swagger-ui-express": "^5.0.1",
     "tsx": "^4.19.1"
   }
 }
