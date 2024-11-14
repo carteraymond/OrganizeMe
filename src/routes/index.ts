@@ -3,6 +3,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../api-docs/swagger-output.json';
 import path from 'path';
 import userRouter from './user';
+import authRouter from './auth'
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.get('/', (req: Request, res: Response): void => {
 });
 
 router.use('/user', userRouter);
+router.use('/auth', authRouter)
 
 export default router;
