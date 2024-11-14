@@ -5,7 +5,11 @@ import { createNewUser } from '../services/userService';
 
 const createUser = async (req: Request, res: Response) => {  
     const newUser = await createNewUser(
-        req.body.email, req.body.password, req.body.firstName, req.body.lastName);
+        req.body.email,
+        req.body.password, 
+        req.body.firstName, 
+        req.body.lastName
+    );
     
     // FIXME: Add Error Handling
     res.send(newUser);

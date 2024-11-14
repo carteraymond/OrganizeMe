@@ -14,6 +14,6 @@ router.get('/', (req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
 });
 
-router.use('/', userRouter);
+router.use('/user', userRouter);
 
 export default router;
