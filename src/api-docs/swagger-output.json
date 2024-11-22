@@ -1,3 +1,631 @@
 {
-    
+  "swagger": "2.0",
+  "info": {
+    "title": "OrganizeMe API",
+    "version": "1.0.0",
+    "description": "API documentation for the OrganizeMe project"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Operations related to users"
+    },
+    {
+      "name": "Tasks",
+      "description": "Operations related to tasks"
+    },
+    {
+      "name": "Tags",
+      "description": "Operations related to tasks"
+    },
+    {
+      "name": "Logs",
+      "description": "Operations related to logs"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create a new user",
+        "description": "Create a new user in the system.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get a user by ID",
+        "description": "Fetch a user by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Create a new task",
+        "description": "Create a new task.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Task created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Get all tasks",
+        "description": "Retrieve all tasks in the system.",
+        "responses": {
+          "200": {
+            "description": "Tasks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Get a task by ID",
+        "description": "Fetch a task by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the task"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Update a task",
+        "description": "Update an existing task by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the task"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Delete a task",
+        "description": "Delete a task by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the task"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted successfully"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        }
+      }
+    },
+    "/tags": {
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Create a new tag",
+        "description": "Create a new tag for a user.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Tag created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Get all tags",
+        "description": "Retrieve all tags for the user.",
+        "responses": {
+          "200": {
+            "description": "Tags retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags/{id}": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Get a tag by ID",
+        "description": "Fetch a tag by its unique ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique ID of the tag"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Update a tag",
+        "description": "Update an existing tag by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique ID of the tag"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Delete a tag",
+        "description": "Delete a tag by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the tag"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag deleted successfully"
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      }
+    },
+    "/logs": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Get all logs",
+        "description": "Retrieve all logs.",
+        "responses": {
+          "200": {
+            "description": "Logs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Log"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "githubId": {
+            "type": "string",
+            "description": "The unique GitHub ID of the user"
+          },
+          "username": {
+            "type": "string",
+            "description": "The username of the user"
+          },
+          "profileImgUrl": {
+            "type": "string",
+            "description": "URL to the user's profile image"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the user"
+          },
+          "canvasToken": {
+            "type": "string",
+            "description": "Token used for authentication with Canvas"
+          }
+        },
+        "required": [
+          "githubId",
+          "username",
+          "displayName"
+        ]
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The unique identifier for the task"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the task"
+          },
+          "description": {
+            "type": "string",
+            "description": "Details about the task"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The due date of the task"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the task",
+            "enum": [
+              "pending",
+              "in-progress",
+              "completed"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "description": "The priority level of the task",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "userId": {
+            "type": "string",
+            "description": "The identifier of the user who owns the task."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Unique identifier for the tag associated with the taks"
+            }
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Identifier for category this task belongs to"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "dueDate",
+          "priority"
+        ]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The unique identifier for the tag"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the tag"
+          },
+          "colorHex": {
+            "type": "string",
+            "description": "The hex color code for the tag",
+            "example": "#FF5733"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The ID of the user who owns this tag"
+          }
+        },
+        "required": [
+          "name",
+          "colorHex",
+          "userId"
+        ]
+      },
+      "Log": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The unique identifier for the log"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The ID of the user who performed the action"
+          },
+          "action": {
+            "type": "string",
+            "description": "The type of action performed",
+            "enum": [
+              "CREATE",
+              "UPDATE",
+              "DELETE"
+            ]
+          },
+          "targetType": {
+            "type": "string",
+            "description": "The type of entity the action was performed on"
+          },
+          "targetId": {
+            "type": "string",
+            "description": "The ID of the target entity"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the action occurred"
+          }
+        },
+        "required": [
+          "userId",
+          "action",
+          "targetType",
+          "targetId"
+        ]
+      }
+    }
+  }
 }
