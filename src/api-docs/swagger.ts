@@ -61,11 +61,13 @@ const doc = {
             type: 'string',
             description: 'The current status of the task',
             enum: ['pending', 'in-progress', 'completed'],
+            default: 'pending'
           },
           priority: {
             type: 'string',
             description: 'The priority level of the task',
             enum: ['low', 'medium', 'high'],
+            default: 'medium',
           },
           userId: {
             type: 'string',
@@ -153,7 +155,7 @@ const doc = {
     },
     {
       name: 'Tags',
-      description: 'Operations related to tasks',
+      description: 'Operations related to tags',
     },
     {
       name: 'Logs',
