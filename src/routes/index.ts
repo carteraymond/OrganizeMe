@@ -4,11 +4,17 @@ import swaggerDocument from '../api-docs/swagger-output.json';
 import path from 'path';
 import userRouter from './user';
 import authRouter from './auth'
+import taskRouter from './task';
+import tagRouter from './tag';
+import logRouter from './log';
 
 const router = express.Router();
 
-router.get('/api-docs', swaggerUi.serve);
-router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+//router.get('/api-docs', swaggerUi.serve);
+//router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+
+// Serve Swagger UI for API documentation
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const __dirname = path.resolve(path.dirname(''));
 router.get('/', (req: Request, res: Response): void => {
@@ -17,5 +23,8 @@ router.get('/', (req: Request, res: Response): void => {
 
 router.use('/user', userRouter);
 router.use('/auth', authRouter)
+router.use('/task', taskRouter);
+router.use('/tag', tagRouter);
+router.use('/log', logRouter);
 
 export default router;
