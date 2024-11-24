@@ -94,7 +94,7 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
       email: userInfo.email,
     };
 
-    res.redirect('/home');
+    res.redirect('/auth/home');
     return;
   } catch (error) {
     console.error('Detailed authentication error:', {
@@ -121,5 +121,17 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     return;
   }
 }
+async function loadHomePage(req: CustomRequest, res: Response): Promise<void> {
+  if (!req.session.user) {
+      res.redirect('/auth');
+      return;
+  }
+  
+  res.render('home', {
+      title: 'Home',
+      user: req.session.user
+  });
+}
 
-export { loadSignInPage, auth };
+
+export { loadSignInPage, loadHomePage, auth };

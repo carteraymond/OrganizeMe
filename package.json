@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/ejs": "^3.1.5",
     "@types/express-session": "^1.18.0",
     "nodemon": "^3.1.7",
     "swagger-autogen": "^2.23.7",
@@ -23,6 +24,7 @@
     "axios": "^1.7.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "mongoose": "^8.7.1",
