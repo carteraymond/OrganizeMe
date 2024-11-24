@@ -7,8 +7,8 @@ const doc = {
     version: '1.0.0',
     description: 'API documentation for the OrganizeMe project',
   },
-  host: 'localhost:3000',
-  schemes: ["http"],
+  host: 'organizeme-xtcl.onrender.com',
+  schemes: ["https"],
   components: {
     schemas: {
       User: {
@@ -77,7 +77,7 @@ const doc = {
             type: 'array',
             items:{
               type: 'string',
-              description: 'Unique identifier for the tag associated with the taks'
+              description: 'Unique identifier for the category associated with the taks'
             }
           },
           categoryId: {
@@ -87,25 +87,25 @@ const doc = {
         },
         required: ['title', 'description', 'dueDate', 'priority'],
       },
-      Tag: {
+      category: {
         type: 'object',
         properties: {
           _id: {
             type: 'string',
-            description: 'The unique identifier for the tag',
+            description: 'The unique identifier for the category',
           },
           name: {
             type: 'string',
-            description: 'The name of the tag',
+            description: 'The name of the category',
           },
           colorHex: {
             type: 'string',
-            description: 'The hex color code for the tag',
+            description: 'The hex color code for the category',
             example: '#FF5733',
           },
           userId: {
             type: 'string',
-            description: 'The ID of the user who owns this tag',
+            description: 'The ID of the user who owns this category',
           },
         },
         required: ['name', 'colorHex', 'userId'],
@@ -144,7 +144,7 @@ const doc = {
       },
     },
   },
-  tags: [
+  category: [
     {
       name: 'User',
       description: 'Operations related to users',
@@ -154,8 +154,8 @@ const doc = {
       description: 'Operations related to tasks',
     },
     {
-      name: 'Tags',
-      description: 'Operations related to tags',
+      name: 'category',
+      description: 'Operations related to category',
     },
     {
       name: 'Logs',
@@ -169,7 +169,7 @@ const outputFile = './swagger-output.json';
 const endpointsFiles = [
   '../routes/user.ts',
   '../routes/task.ts',
-  '../routes/tag.ts',
+  '../routes/category.ts',
   '../routes/log.ts'
 ]; 
 

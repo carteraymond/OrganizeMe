@@ -1,0 +1,10 @@
+### Create User 
+POST https://organizeme-xtcl.onrender.com/user
+content-type: application/json
+
+{
+    "firstName": "Coquito",
+    "lastName": "Sanabria",
+    "email": "coq@gmail.com",
+    "password": "strongPass"
+}
