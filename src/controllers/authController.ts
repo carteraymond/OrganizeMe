@@ -3,12 +3,14 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import dotenv from 'dotenv';
 import { Session } from 'express-session';
 
+// Load environment variables early to fail fast if required OAuth configs are missing
 dotenv.config();
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+// Extended types ensure type safety when dealing with session data
 interface SessionUser {
   id: number;
   name: string;
@@ -23,14 +25,16 @@ interface CustomRequest extends Request {
   session: CustomSession;
 }
 
+// Partial type allowing for GitHub's variable user response format
 interface UserInfo {
   id: number;
   name?: string;
-  login: string;
+  login: string;    // Fallback when name isn't available
   email?: string;
 }
 
 async function loadSignInPage(req: Request, res: Response): Promise<void> {
+  // Scope limited to user:email to follow principle of least privilege
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
   res.render('signin', {
     title: 'Sign In To Continue',
@@ -40,18 +44,19 @@ async function loadSignInPage(req: Request, res: Response): Promise<void> {
 
 async function auth(req: CustomRequest, res: Response): Promise<void> {
   const { code } = req.query;
-
   if (!code) {
     console.error('No code received from GitHub');
     res.status(400).send('No code received from GitHub');
     return;
   }
 
+  // Debug logs
   console.log('Received GitHub code:', code);
   console.log('Using CLIENT_ID:', CLIENT_ID);
   console.log('Using REDIRECT_URI:', REDIRECT_URI);
 
   try {
+    // Exchange code for access token using JSON format for cleaner parsing
     const tokenResponse: AxiosResponse<{ access_token: string }> = await axios({
       method: 'post',
       url: 'https://github.com/login/oauth/access_token',
@@ -68,14 +73,15 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     });
 
     console.log('Token response:', tokenResponse.data);
-
     const access_token = tokenResponse.data.access_token;
-
+    
+    // Early token validation prevents unnecessary API calls
     if (!access_token) {
       console.error('No access token in response:', tokenResponse.data);
       throw new Error('No access token received from GitHub');
     }
 
+    // Fetch user details once we have valid token
     const userInfoResponse: AxiosResponse<UserInfo> = await axios({
       method: 'get',
       url: 'https://api.github.com/user',
@@ -88,15 +94,17 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     const userInfo = userInfoResponse.data;
     console.log('User info received:', userInfo);
 
+    // Store minimal user data in session for future requests
     req.session.user = {
       id: userInfo.id,
-      name: userInfo.name || userInfo.login,
+      name: userInfo.name || userInfo.login,  // Fallback to login if name isn't set
       email: userInfo.email,
     };
 
     res.redirect('/auth/home');
     return;
   } catch (error) {
+    // Structured error logging helps debug OAuth issues
     console.error('Detailed authentication error:', {
       message: (error as AxiosError).message ?? 'Unknown error',
       response: (error as AxiosError).response
@@ -121,17 +129,18 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     return;
   }
 }
+
 async function loadHomePage(req: CustomRequest, res: Response): Promise<void> {
+  // Security check to prevent unauthorized access to home page
   if (!req.session.user) {
       res.redirect('/auth');
       return;
   }
-  
+ 
   res.render('home', {
       title: 'Home',
       user: req.session.user
   });
 }
-
 
 export { loadSignInPage, loadHomePage, auth };
