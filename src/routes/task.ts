@@ -3,8 +3,8 @@ import express from 'express';
 const taskRouter = express.Router();
 
 // Create a new task
-taskRouter.post('/tasks', (req, res) => {
-    /* #swagger.tags = ['Tasks']
+taskRouter.post('/task', (req, res) => {
+    /* #swagger.task = ['Tasks']
        #swagger.summary = 'Create a new task'
        #swagger.description = 'Create a new task.'
        #swagger.requestBody = {
@@ -29,8 +29,8 @@ taskRouter.post('/tasks', (req, res) => {
 });
 
 // Get all tasks
-taskRouter.get('/tasks', (req, res) => {
-    /* #swagger.tags = ['Tasks']
+taskRouter.get('/task', (req, res) => {
+    /* #swagger.task = ['Tasks']
        #swagger.summary = 'Get all tasks'
        #swagger.description = 'Retrieve all tasks in the system.'
        #swagger.responses[200] = {
@@ -49,8 +49,8 @@ taskRouter.get('/tasks', (req, res) => {
 });
 
 // Get a single task by ID
-taskRouter.get('/tasks/:id', (req, res) => {
-    /* #swagger.tags = ['Tasks']
+taskRouter.get('/task/:id', (req, res) => {
+    /* #swagger.task = ['Tasks']
        #swagger.summary = 'Get a task by ID'
        #swagger.description = 'Fetch a task by its ID.'
        #swagger.parameters['id'] = {
@@ -75,8 +75,8 @@ taskRouter.get('/tasks/:id', (req, res) => {
 });
 
 // Update a task by ID
-taskRouter.put('/tasks/:id', (req, res) => {
-    /* #swagger.tags = ['Tasks']
+taskRouter.put('/task/:id', (req, res) => {
+    /* #swagger.task = ['Tasks']
        #swagger.summary = 'Update a task'
        #swagger.description = 'Update an existing task by its ID.'
        #swagger.parameters['id'] = {
@@ -110,8 +110,8 @@ taskRouter.put('/tasks/:id', (req, res) => {
 });
 
 // Delete a task by ID
-taskRouter.delete('/tasks/:id', (req, res) => {
-    /* #swagger.tags = ['Tasks']
+taskRouter.delete('/task/:id', (req, res) => {
+    /* #swagger.task = ['Tasks']
        #swagger.summary = 'Delete a task'
        #swagger.description = 'Delete a task by its ID.'
        #swagger.parameters['id'] = {

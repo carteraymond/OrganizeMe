@@ -4,7 +4,7 @@ import swaggerDocument from '../api-docs/swagger-output.json';
 import path from 'path';
 import userRouter from './user';
 import taskRouter from './task';
-import tagRouter from './tag';
+import categoryRouter from './category';
 import logRouter from './log';
 
 const router = express.Router();
@@ -15,14 +15,16 @@ const router = express.Router();
 // Serve Swagger UI for API documentation
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const __dirname = path.resolve(path.dirname(''));
-router.get('/', (req: Request, res: Response): void => {
-    res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
-});
+// Change the File Path to the new index page... when we make it
+
+// const __dirname = path.resolve(path.dirname(''));
+// router.get('/', (req: Request, res: Response): void => {
+//     res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
+// });
 
 router.use('/user', userRouter);
 router.use('/task', taskRouter);
-router.use('/tag', tagRouter);
+router.use('/category', categoryRouter);
 router.use('/log', logRouter);
 
 export default router;
