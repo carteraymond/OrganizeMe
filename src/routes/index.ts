@@ -15,10 +15,12 @@ const router = express.Router();
 // Serve Swagger UI for API documentation
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const __dirname = path.resolve(path.dirname(''));
-router.get('/', (req: Request, res: Response): void => {
-    res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
-});
+// Change the File Path to the new index page... when we make it
+
+// const __dirname = path.resolve(path.dirname(''));
+// router.get('/', (req: Request, res: Response): void => {
+//     res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
+// });
 
 router.use('/user', userRouter);
 router.use('/task', taskRouter);
