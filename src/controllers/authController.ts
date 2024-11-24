@@ -1,12 +1,27 @@
 import express, { Request, Response } from 'express';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import dotenv from 'dotenv';
+import { Session } from 'express-session';
 
 dotenv.config();
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
+
+interface SessionUser {
+  id: number;
+  name: string;
+  email?: string;
+}
+
+interface CustomSession extends Session {
+  user?: SessionUser;
+}
+
+interface CustomRequest extends Request {
+  session: CustomSession;
+}
 
 interface UserInfo {
   id: number;
@@ -23,12 +38,13 @@ async function loadSignInPage(req: Request, res: Response): Promise<void> {
   });
 }
 
-async function auth(req: Request, res: Response): Promise<void> {
+async function auth(req: CustomRequest, res: Response): Promise<void> {
   const { code } = req.query;
 
   if (!code) {
     console.error('No code received from GitHub');
-    return res.status(400).send('No code received from GitHub');
+    res.status(400).send('No code received from GitHub');
+    return;
   }
 
   console.log('Received GitHub code:', code);
@@ -79,24 +95,31 @@ async function auth(req: Request, res: Response): Promise<void> {
     };
 
     res.redirect('/home');
+    return;
   } catch (error) {
     console.error('Detailed authentication error:', {
-      message: (error as AxiosError).message,
+      message: (error as AxiosError).message ?? 'Unknown error',
       response: (error as AxiosError).response
         ? {
-            status: (error as AxiosError).response?.status,
-            data: (error as AxiosError).response?.data,
+            status: (error as AxiosError).response?.status ?? 'unknown',
+            data: (error as AxiosError).response?.data ?? null,
           }
         : 'No response',
-      config: (error as AxiosError).config
-        ? {
-            url: (error as AxiosError).config.url,
-            method: (error as AxiosError).config.method,
-            headers: (error as AxiosError).config.headers,
-          }
-        : 'No config',
+      config: (() => {
+        const axiosConfig = (error as AxiosError).config;
+        if (axiosConfig) {
+          return {
+            url: axiosConfig.url ?? 'unknown',
+            method: axiosConfig.method ?? 'unknown',
+            headers: axiosConfig.headers ?? {},
+          };
+        }
+        return 'No config';
+      })(),
     });
     res.status(500).send(`Authentication failed: ${(error as Error).message}`);
+    return;
   }
 }
+
 export { loadSignInPage, auth };
