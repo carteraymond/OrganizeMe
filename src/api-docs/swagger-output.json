@@ -5,70 +5,48 @@
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
   },
-  "host": "localhost:3000",
+  "host": "organizeme-xtcl.onrender.com",
   "basePath": "/",
-  "category": [
-    {
-      "name": "User",
-      "description": "Operations related to users"
-    },
-    {
-      "name": "Tasks",
-      "description": "Operations related to tasks"
-    },
-    {
-      "name": "category",
-      "description": "Operations related to tasks"
-    },
-    {
-      "name": "Logs",
-      "description": "Operations related to logs"
-    }
-  ],
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/user": {
       "post": {
-        "category": [
-          "User"
-        ],
-        "summary": "Create a new user",
-        "description": "Create a new user in the system.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "201": {
-            "description": "User created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "lastName": {
+                  "example": "any"
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad request"
           }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
     "/user/{id}": {
       "get": {
-        "category": [
+        "tags": [
           "User"
         ],
         "summary": "Get a user by ID",
@@ -102,11 +80,8 @@
         }
       }
     },
-    "/tasks": {
+    "/task": {
       "post": {
-        "category": [
-          "Tasks"
-        ],
         "summary": "Create a new task",
         "description": "Create a new task.",
         "responses": {
@@ -139,9 +114,6 @@
         }
       },
       "get": {
-        "category": [
-          "Tasks"
-        ],
         "summary": "Get all tasks",
         "description": "Retrieve all tasks in the system.",
         "responses": {
@@ -161,11 +133,8 @@
         }
       }
     },
-    "/tasks/{id}": {
+    "/task/{id}": {
       "get": {
-        "category": [
-          "Tasks"
-        ],
         "summary": "Get a task by ID",
         "description": "Fetch a task by its ID.",
         "parameters": [
@@ -197,9 +166,6 @@
         }
       },
       "put": {
-        "category": [
-          "Tasks"
-        ],
         "summary": "Update a task",
         "description": "Update an existing task by its ID.",
         "parameters": [
@@ -244,9 +210,6 @@
         }
       },
       "delete": {
-        "category": [
-          "Tasks"
-        ],
         "summary": "Delete a task",
         "description": "Delete a task by its ID.",
         "parameters": [
@@ -273,9 +236,6 @@
     },
     "/category": {
       "post": {
-        "category": [
-          "category"
-        ],
         "summary": "Create a new category",
         "description": "Create a new category for a user.",
         "responses": {
@@ -308,11 +268,8 @@
         }
       },
       "get": {
-        "category": [
-          "category"
-        ],
         "summary": "Get all category",
-        "description": "Retrieve all category for the user.",
+        "description": "Retrieve all categories for the user.",
         "responses": {
           "200": {
             "description": "category retrieved successfully",
@@ -332,9 +289,6 @@
     },
     "/category/{id}": {
       "get": {
-        "category": [
-          "category"
-        ],
         "summary": "Get a category by ID",
         "description": "Fetch a category by its unique ID.",
         "parameters": [
@@ -366,9 +320,6 @@
         }
       },
       "put": {
-        "category": [
-          "category"
-        ],
         "summary": "Update a category",
         "description": "Update an existing category by its ID.",
         "parameters": [
@@ -413,9 +364,6 @@
         }
       },
       "delete": {
-        "category": [
-          "category"
-        ],
         "summary": "Delete a category",
         "description": "Delete a category by its ID.",
         "parameters": [
@@ -440,9 +388,9 @@
         }
       }
     },
-    "/logs": {
+    "/log": {
       "get": {
-        "category": [
+        "tags": [
           "Logs"
         ],
         "summary": "Get all logs",
@@ -524,7 +472,8 @@
               "pending",
               "in-progress",
               "completed"
-            ]
+            ],
+            "default": "pending"
           },
           "priority": {
             "type": "string",
@@ -533,7 +482,8 @@
               "low",
               "medium",
               "high"
-            ]
+            ],
+            "default": "medium"
           },
           "userId": {
             "type": "string",
@@ -627,5 +577,23 @@
         ]
       }
     }
-  }
+  },
+  "category": [
+    {
+      "name": "User",
+      "description": "Operations related to users"
+    },
+    {
+      "name": "Tasks",
+      "description": "Operations related to tasks"
+    },
+    {
+      "name": "category",
+      "description": "Operations related to category"
+    },
+    {
+      "name": "Logs",
+      "description": "Operations related to logs"
+    }
+  ]
 }
