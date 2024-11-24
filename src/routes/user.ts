@@ -1,4 +1,4 @@
-import { createUser } from '../controllers/userController';
+import { create, getAll } from '../controllers/userController';
 import express from 'express';
 
 const userRouter = express.Router();
@@ -29,7 +29,7 @@ const userRouter = express.Router();
  
 // });
 
-userRouter.post('/user', createUser);
+userRouter.post('/user', create);
 /**
  * @swagger
  * /user:
@@ -53,7 +53,7 @@ userRouter.post('/user', createUser);
  *       400:
  *         description: Bad request
  */
-
+userRouter.get('/user', getAll);
 
 userRouter.get('/user/:id', (req, res) => {
     /* #swagger.tags = ['User']

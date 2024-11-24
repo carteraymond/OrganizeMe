@@ -20,8 +20,15 @@ const update = async (req: Request, res: Response) => {
     // Error Handling needed
     res.send(updateUser);
 };
+const getAll = async (req: Request, res: Response) => {
+    const getAll = await getAllUsers();
+
+    // Error Handling needed
+    res.send(getAll);
+};
 
 export {
     create,
     update,
+    getAll,
 }
