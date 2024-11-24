@@ -3,32 +3,33 @@ import express from 'express';
 
 const userRouter = express.Router();
 
-userRouter.post('/user', (req, res) => {
-    /* #swagger.tags = ['User']
-       #swagger.summary = 'Create a new user'
-       #swagger.description = 'Create a new user in the system.'
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/User' }
-               }
-           }
-       }
-       #swagger.responses[201] = {
-           description: 'User created successfully',
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/User' }
-               }
-           }
-       }
-       #swagger.responses[400] = { description: 'Bad request' }
-    */
-    res.send('Create user handler is not implemented yet');
-});
+// userRouter.post('/user', (req, res) => {
+//     /* #swagger.tags = ['User']
+//        #swagger.summary = 'Create a new user'
+//        #swagger.description = 'Create a new user in the system.'
+//        #swagger.requestBody = {
+//            required: true,
+//            content: {
+//                'application/json': {
+//                    schema: { $ref: '#/components/schemas/User' }
+//                }
+//            }
+//        }
+//        #swagger.responses[201] = {
+//            description: 'User created successfully',
+//            content: {
+//                'application/json': {
+//                    schema: { $ref: '#/components/schemas/User' }
+//                }
+//            }
+//        }
+//        #swagger.responses[400] = { description: 'Bad request' }
+//     */
+//     // res.send('Create user handler is not implemented yet');
+ 
+// });
 
-
+userRouter.post('/user', createUser);
 /**
  * @swagger
  * /user:
@@ -52,7 +53,7 @@ userRouter.post('/user', (req, res) => {
  *       400:
  *         description: Bad request
  */
-//userRouter.post('/', createUser);
+
 
 userRouter.get('/user/:id', (req, res) => {
     /* #swagger.tags = ['User']

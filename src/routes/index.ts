@@ -4,7 +4,7 @@ import swaggerDocument from '../api-docs/swagger-output.json';
 import path from 'path';
 import userRouter from './user';
 import taskRouter from './task';
-import tagRouter from './tag';
+import categoryRouter from './category';
 import logRouter from './log';
 
 const router = express.Router();
@@ -24,7 +24,7 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 router.use('/user', userRouter);
 router.use('/task', taskRouter);
-router.use('/tag', tagRouter);
+router.use('/category', categoryRouter);
 router.use('/log', logRouter);
 
 export default router;

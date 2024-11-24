@@ -3,7 +3,7 @@ import express from 'express';
 const logRouter = express.Router();
 
 // Get all logs
-logRouter.get('/logs', (req, res) => {
+logRouter.get('/log', (req, res) => {
     /* #swagger.tags = ['Logs']
        #swagger.summary = 'Get all logs'
        #swagger.description = 'Retrieve all logs.'
