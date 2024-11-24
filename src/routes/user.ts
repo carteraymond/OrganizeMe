@@ -29,7 +29,7 @@ const userRouter = express.Router();
  
 // });
 
-userRouter.post('/user', create);
+userRouter.post('/', create);
 /**
  * @swagger
  * /user:
@@ -53,9 +53,9 @@ userRouter.post('/user', create);
  *       400:
  *         description: Bad request
  */
-userRouter.get('/user', getAll);
+userRouter.get('/', getAll);
 
-userRouter.get('/user/:id', (req, res) => {
+userRouter.get('/:id', (req, res) => {
     /* #swagger.tags = ['User']
        #swagger.summary = 'Get a user by ID'
        #swagger.description = 'Fetch a user by their ID.'
