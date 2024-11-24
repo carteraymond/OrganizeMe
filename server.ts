@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/', routes);
 
 app.listen(port, (): void => {
-  console.log(`Server listening at http://localhost:${port}`);
+  console.log(`Server listening at ${port}`);
 });
 
 // Below is code for testing. This will be removed at a later stage.
