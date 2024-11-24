@@ -16,7 +16,7 @@ const UserSchema: Schema = new Schema({
     lastName: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-  });
+ }, { collection: 'users' });
   
   const User = mongoose.model<IUser>('User', UserSchema);
   

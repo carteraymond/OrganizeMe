@@ -1,7 +1,7 @@
 import User from '../models/user';
 
 
-const createNewUser = async (
+const createUser = async (
     email: string, 
     password: string, 
     firstName: string, 
@@ -105,7 +105,7 @@ const getAllUsers = async () => {
 
 
 export {
-    createNewUser,
+    createUser,
     updateUser,
     deleteUser,
     getUserById,
