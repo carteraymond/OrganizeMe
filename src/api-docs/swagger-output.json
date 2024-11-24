@@ -5,63 +5,49 @@
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
   },
-  "host": "localhost:3000",
+  "host": "organizeme-xtcl.onrender.com",
   "basePath": "/",
-  "tags": [
-    {
-      "name": "User",
-      "description": "Operations related to users"
-    },
-    {
-      "name": "Tasks",
-      "description": "Operations related to tasks"
-    },
-    {
-      "name": "Tags",
-      "description": "Operations related to tasks"
-    },
-    {
-      "name": "Logs",
-      "description": "Operations related to logs"
-    }
-  ],
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/user": {
       "post": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Create a new user",
-        "description": "Create a new user in the system.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "201": {
-            "description": "User created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "lastName": {
+                  "example": "any"
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad request"
           }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -102,11 +88,8 @@
         }
       }
     },
-    "/tasks": {
+    "/task": {
       "post": {
-        "tags": [
-          "Tasks"
-        ],
         "summary": "Create a new task",
         "description": "Create a new task.",
         "responses": {
@@ -139,9 +122,6 @@
         }
       },
       "get": {
-        "tags": [
-          "Tasks"
-        ],
         "summary": "Get all tasks",
         "description": "Retrieve all tasks in the system.",
         "responses": {
@@ -161,11 +141,8 @@
         }
       }
     },
-    "/tasks/{id}": {
+    "/task/{id}": {
       "get": {
-        "tags": [
-          "Tasks"
-        ],
         "summary": "Get a task by ID",
         "description": "Fetch a task by its ID.",
         "parameters": [
@@ -197,9 +174,6 @@
         }
       },
       "put": {
-        "tags": [
-          "Tasks"
-        ],
         "summary": "Update a task",
         "description": "Update an existing task by its ID.",
         "parameters": [
@@ -244,9 +218,6 @@
         }
       },
       "delete": {
-        "tags": [
-          "Tasks"
-        ],
         "summary": "Delete a task",
         "description": "Delete a task by its ID.",
         "parameters": [
@@ -271,23 +242,20 @@
         }
       }
     },
-    "/tags": {
+    "/category": {
       "post": {
-        "tags": [
-          "Tags"
-        ],
-        "summary": "Create a new tag",
-        "description": "Create a new tag for a user.",
+        "summary": "Create a new category",
+        "description": "Create a new category for a user.",
         "responses": {
           "200": {
             "description": "OK"
           },
           "201": {
-            "description": "Tag created successfully",
+            "description": "category created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag"
+                  "$ref": "#/components/schemas/category"
                 }
               }
             }
@@ -301,27 +269,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Tag"
+                "$ref": "#/components/schemas/category"
               }
             }
           }
         }
       },
       "get": {
-        "tags": [
-          "Tags"
-        ],
-        "summary": "Get all tags",
-        "description": "Retrieve all tags for the user.",
+        "summary": "Get all category",
+        "description": "Retrieve all categories for the user.",
         "responses": {
           "200": {
-            "description": "Tags retrieved successfully",
+            "description": "category retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Tag"
+                    "$ref": "#/components/schemas/category"
                   }
                 }
               }
@@ -330,13 +295,10 @@
         }
       }
     },
-    "/tags/{id}": {
+    "/category/{id}": {
       "get": {
-        "tags": [
-          "Tags"
-        ],
-        "summary": "Get a tag by ID",
-        "description": "Fetch a tag by its unique ID.",
+        "summary": "Get a category by ID",
+        "description": "Fetch a category by its unique ID.",
         "parameters": [
           {
             "name": "id",
@@ -346,31 +308,28 @@
             "schema": {
               "type": "string"
             },
-            "description": "The unique ID of the tag"
+            "description": "The unique ID of the category"
           }
         ],
         "responses": {
           "200": {
-            "description": "Tag found",
+            "description": "category found",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag"
+                  "$ref": "#/components/schemas/category"
                 }
               }
             }
           },
           "404": {
-            "description": "Tag not found"
+            "description": "category not found"
           }
         }
       },
       "put": {
-        "tags": [
-          "Tags"
-        ],
-        "summary": "Update a tag",
-        "description": "Update an existing tag by its ID.",
+        "summary": "Update a category",
+        "description": "Update an existing category by its ID.",
         "parameters": [
           {
             "name": "id",
@@ -380,16 +339,16 @@
             "schema": {
               "type": "string"
             },
-            "description": "The unique ID of the tag"
+            "description": "The unique ID of the category"
           }
         ],
         "responses": {
           "200": {
-            "description": "Tag updated successfully",
+            "description": "category updated successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag"
+                  "$ref": "#/components/schemas/category"
                 }
               }
             }
@@ -398,7 +357,7 @@
             "description": "Bad request"
           },
           "404": {
-            "description": "Tag not found"
+            "description": "category not found"
           }
         },
         "requestBody": {
@@ -406,18 +365,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Tag"
+                "$ref": "#/components/schemas/category"
               }
             }
           }
         }
       },
       "delete": {
-        "tags": [
-          "Tags"
-        ],
-        "summary": "Delete a tag",
-        "description": "Delete a tag by its ID.",
+        "summary": "Delete a category",
+        "description": "Delete a category by its ID.",
         "parameters": [
           {
             "name": "id",
@@ -427,20 +383,20 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the tag"
+            "description": "ID of the category"
           }
         ],
         "responses": {
           "200": {
-            "description": "Tag deleted successfully"
+            "description": "category deleted successfully"
           },
           "404": {
-            "description": "Tag not found"
+            "description": "category not found"
           }
         }
       }
     },
-    "/logs": {
+    "/log": {
       "get": {
         "tags": [
           "Logs"
@@ -524,7 +480,8 @@
               "pending",
               "in-progress",
               "completed"
-            ]
+            ],
+            "default": "pending"
           },
           "priority": {
             "type": "string",
@@ -533,7 +490,8 @@
               "low",
               "medium",
               "high"
-            ]
+            ],
+            "default": "medium"
           },
           "userId": {
             "type": "string",
@@ -543,7 +501,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "description": "Unique identifier for the tag associated with the taks"
+              "description": "Unique identifier for the category associated with the taks"
             }
           },
           "categoryId": {
@@ -558,25 +516,25 @@
           "priority"
         ]
       },
-      "Tag": {
+      "category": {
         "type": "object",
         "properties": {
           "_id": {
             "type": "string",
-            "description": "The unique identifier for the tag"
+            "description": "The unique identifier for the category"
           },
           "name": {
             "type": "string",
-            "description": "The name of the tag"
+            "description": "The name of the category"
           },
           "colorHex": {
             "type": "string",
-            "description": "The hex color code for the tag",
+            "description": "The hex color code for the category",
             "example": "#FF5733"
           },
           "userId": {
             "type": "string",
-            "description": "The ID of the user who owns this tag"
+            "description": "The ID of the user who owns this category"
           }
         },
         "required": [
@@ -627,5 +585,23 @@
         ]
       }
     }
-  }
+  },
+  "category": [
+    {
+      "name": "User",
+      "description": "Operations related to users"
+    },
+    {
+      "name": "Tasks",
+      "description": "Operations related to tasks"
+    },
+    {
+      "name": "category",
+      "description": "Operations related to category"
+    },
+    {
+      "name": "Logs",
+      "description": "Operations related to logs"
+    }
+  ]
 }

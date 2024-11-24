@@ -1,34 +1,35 @@
-import { createUser } from '../controllers/userController';
+import { create, getAll } from '../controllers/userController';
 import express from 'express';
 
 const userRouter = express.Router();
 
-userRouter.post('/user', (req, res) => {
-    /* #swagger.tags = ['User']
-       #swagger.summary = 'Create a new user'
-       #swagger.description = 'Create a new user in the system.'
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/User' }
-               }
-           }
-       }
-       #swagger.responses[201] = {
-           description: 'User created successfully',
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/User' }
-               }
-           }
-       }
-       #swagger.responses[400] = { description: 'Bad request' }
-    */
-    res.send('Create user handler is not implemented yet');
-});
+// userRouter.post('/user', (req, res) => {
+//     /* #swagger.tags = ['User']
+//        #swagger.summary = 'Create a new user'
+//        #swagger.description = 'Create a new user in the system.'
+//        #swagger.requestBody = {
+//            required: true,
+//            content: {
+//                'application/json': {
+//                    schema: { $ref: '#/components/schemas/User' }
+//                }
+//            }
+//        }
+//        #swagger.responses[201] = {
+//            description: 'User created successfully',
+//            content: {
+//                'application/json': {
+//                    schema: { $ref: '#/components/schemas/User' }
+//                }
+//            }
+//        }
+//        #swagger.responses[400] = { description: 'Bad request' }
+//     */
+//     // res.send('Create user handler is not implemented yet');
+ 
+// });
 
-
+userRouter.post('/', create);
 /**
  * @swagger
  * /user:
@@ -52,9 +53,9 @@ userRouter.post('/user', (req, res) => {
  *       400:
  *         description: Bad request
  */
-//userRouter.post('/', createUser);
+userRouter.get('/', getAll);
 
-userRouter.get('/user/:id', (req, res) => {
+userRouter.get('/:id', (req, res) => {
     /* #swagger.tags = ['User']
        #swagger.summary = 'Get a user by ID'
        #swagger.description = 'Fetch a user by their ID.'

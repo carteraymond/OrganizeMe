@@ -5,7 +5,7 @@ import path from 'path';
 import userRouter from './user';
 import authRouter from './auth'
 import taskRouter from './task';
-import tagRouter from './tag';
+import categoryRouter from './category';
 import logRouter from './log';
 
 const router = express.Router();
@@ -26,7 +26,7 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 router.use('/user', userRouter);
 router.use('/auth', authRouter)
 router.use('/task', taskRouter);
-router.use('/tag', tagRouter);
+router.use('/category', categoryRouter);
 router.use('/log', logRouter);
 
 export default router;
