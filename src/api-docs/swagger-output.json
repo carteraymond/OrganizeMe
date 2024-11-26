@@ -5,10 +5,10 @@
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
   },
-  "host": "localhost:3000",
+  "host": "organizeme-xtcl.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/": {
@@ -21,16 +21,28 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "title": {
                   "example": "any"
                 },
-                "password": {
+                "description": {
                   "example": "any"
                 },
-                "firstName": {
+                "dueDate": {
                   "example": "any"
                 },
-                "lastName": {
+                "status": {
+                  "example": "any"
+                },
+                "priority": {
+                  "example": "any"
+                },
+                "userId": {
+                  "example": "any"
+                },
+                "tags": {
+                  "example": "any"
+                },
+                "categoryId": {
                   "example": "any"
                 }
               }
@@ -53,95 +65,6 @@
       }
     },
     "/{id}": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Get a user by ID",
-        "description": "Fetch a user by their ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the user"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/task": {
-      "post": {
-        "summary": "Create a new task",
-        "description": "Create a new task.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "201": {
-            "description": "Task created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Task"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get all tasks",
-        "description": "Retrieve all tasks in the system.",
-        "responses": {
-          "200": {
-            "description": "Tasks retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Task"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/task/{id}": {
       "get": {
         "summary": "Get a task by ID",
         "description": "Fetch a task by its ID.",
@@ -511,7 +434,9 @@
         },
         "required": [
           "title",
-          "description"
+          "description",
+          "dueDate",
+          "priority"
         ]
       },
       "category": {

@@ -1,52 +1,13 @@
 import express from 'express';
+import { create, getAll, getId, remove, update } from '../controllers/taskController';
 
 const taskRouter = express.Router();
 
 // Create a new task
-taskRouter.post('/', (req, res) => {
-    /* #swagger.task = ['Tasks']
-       #swagger.summary = 'Create a new task'
-       #swagger.description = 'Create a new task.'
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/Task' }
-               }
-           }
-       }
-       #swagger.responses[201] = {
-           description: 'Task created successfully',
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/Task' }
-               }
-           }
-       }
-       #swagger.responses[400] = { description: 'Bad request' }
-    */
-    res.send('Create task handler is not implemented yet');
-});
+taskRouter.post('/', create);
 
 // Get all tasks
-taskRouter.get('/', (req, res) => {
-    /* #swagger.task = ['Tasks']
-       #swagger.summary = 'Get all tasks'
-       #swagger.description = 'Retrieve all tasks in the system.'
-       #swagger.responses[200] = {
-           description: 'Tasks retrieved successfully',
-           content: {
-               'application/json': {
-                   schema: {
-                       type: 'array',
-                       items: { $ref: '#/components/schemas/Task' }
-                   }
-               }
-           }
-       }
-    */
-    res.send('Get all tasks handler is not implemented yet');
-});
+taskRouter.get('/', getAll);
 
 // Get a single task by ID
 taskRouter.get('/:id', (req, res) => {
@@ -71,7 +32,7 @@ taskRouter.get('/:id', (req, res) => {
        }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send('Get task by ID handler is not implemented yet');
+    res.send(getId);
 });
 
 // Update a task by ID
@@ -106,7 +67,7 @@ taskRouter.put('/:id', (req, res) => {
        #swagger.responses[400] = { description: 'Bad request' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send('Update task handler is not implemented yet');
+    res.send(update);
 });
 
 // Delete a task by ID
@@ -125,7 +86,7 @@ taskRouter.delete('/:id', (req, res) => {
        #swagger.responses[200] = { description: 'Task deleted successfully' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send('Delete task handler is not implemented yet');
+    res.send(remove);
 });
 
 export default taskRouter;

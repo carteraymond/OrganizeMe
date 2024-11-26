@@ -6,7 +6,7 @@ const createTask = async (
     description: string,
     dueDate: Date,
     status: string,
-    priority: number,
+    priority: string,
     userId: string,
     tags: string,
     categoryId: string,
@@ -17,11 +17,11 @@ const createTask = async (
         title: title,
         description: description,
         dueDate: dueDate,
-        status: null,
+        status: status,
         priority: priority,
-        userId: null,
+        userId: userId,
         tags: tags,
-        categoryId: null,
+        categoryId: categoryId,
     });
 
     // Save new Task Model

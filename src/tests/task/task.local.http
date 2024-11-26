@@ -1,0 +1,24 @@
+### Create Task 
+POST http://localhost:3000/task
+content-type: application/json
+
+{
+    "title": "Complete Final Project",
+    "description": "I need to complete the final project and get a passing grade",
+    "dueDate": "12-4-2024",
+    "status": "active",
+    "priority": "High",
+    "userId":"WIP",
+    "tags":"School, Homework, Project",
+    "categoryId":"WIP"
+}
+
+
+# req.body.title,
+# req.body.description,
+# req.body.dueDate, 
+# req.body.status,
+# req.body.priority,
+# req.body.userId,
+# req.body.tags,
+# req.body.categoryId
