@@ -7,6 +7,11 @@ const doc = {
     version: '1.0.0',
     description: 'API documentation for the OrganizeMe project',
   },
+  // Added to allow faster switching from prod to test, comment renders and uncomment test to switch
+
+  // host: 'localhost:3000',
+  // schemes: ["http"],
+
   host: 'organizeme-xtcl.onrender.com',
   schemes: ["https"],
   components: {

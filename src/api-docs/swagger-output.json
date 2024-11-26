@@ -5,13 +5,13 @@
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
   },
-  "host": "organizeme-xtcl.onrender.com",
+  "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
   ],
   "paths": {
-    "/user": {
+    "/": {
       "post": {
         "description": "",
         "parameters": [
@@ -52,7 +52,7 @@
         }
       }
     },
-    "/user/{id}": {
+    "/{id}": {
       "get": {
         "tags": [
           "User"
@@ -511,9 +511,7 @@
         },
         "required": [
           "title",
-          "description",
-          "dueDate",
-          "priority"
+          "description"
         ]
       },
       "category": {
