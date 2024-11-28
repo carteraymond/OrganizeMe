@@ -3,6 +3,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../api-docs/swagger-output.json';
 import path from 'path';
 import userRouter from './user';
+import authRouter from './auth'
 import taskRouter from './task';
 import categoryRouter from './category';
 import logRouter from './log';
@@ -23,6 +24,7 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // });
 
 router.use('/user', userRouter);
+router.use('/auth', authRouter)
 router.use('/task', taskRouter);
 router.use('/category', categoryRouter);
 router.use('/log', logRouter);
