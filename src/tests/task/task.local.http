@@ -1,3 +1,9 @@
+### Get All Tasks
+GET http://localhost:3000/task HTTP/1.1;
+
+### Get Task by Id
+GET http://localhost:3000/task/123456765432 HTTP/1.1
+
 ### Create Task 
 POST http://localhost:3000/task
 content-type: application/json
@@ -12,13 +18,19 @@ content-type: application/json
     "tags":"School, Homework, Project",
     "categoryId":"WIP"
 }
+### Update Task
+PUT http://localhost:3000/task/1454321432 HTTP/1.1
+Content-Type: application/json
 
-
-# req.body.title,
-# req.body.description,
-# req.body.dueDate, 
-# req.body.status,
-# req.body.priority,
-# req.body.userId,
-# req.body.tags,
-# req.body.categoryId
+{
+    "title": "Complete Final Project",
+    "description": "I need to complete the final project and get a passing grade",
+    "dueDate": "12-4-2024",
+    "status": "active",
+    "priority": "High",
+    "userId":"WIP",
+    "tags":"School, Homework, Project",
+    "categoryId":"WIP"
+}
+### Delete Task
+DELETE http://localhost:3000/task/1454323432123 HTTP/1.1

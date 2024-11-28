@@ -4,13 +4,13 @@ import { create, getAll, getId, remove, update } from '../controllers/taskContro
 const taskRouter = express.Router();
 
 // Create a new task
-taskRouter.post('/', create);
+taskRouter.post('/task', create);
 
 // Get all tasks
-taskRouter.get('/', getAll);
+taskRouter.get('/task', getAll);
 
 // Get a single task by ID
-taskRouter.get('/:id', (req, res) => {
+taskRouter.get('/task/:id', (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Get a task by ID'
        #swagger.description = 'Fetch a task by its ID.'
@@ -36,7 +36,7 @@ taskRouter.get('/:id', (req, res) => {
 });
 
 // Update a task by ID
-taskRouter.put('/:id', (req, res) => {
+taskRouter.put('/task/:id', (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Update a task'
        #swagger.description = 'Update an existing task by its ID.'
@@ -71,7 +71,7 @@ taskRouter.put('/:id', (req, res) => {
 });
 
 // Delete a task by ID
-taskRouter.delete('/:id', (req, res) => {
+taskRouter.delete('/task/:id', (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Delete a task'
        #swagger.description = 'Delete a task by its ID.'

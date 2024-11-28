@@ -9,11 +9,11 @@ const doc = {
   },
   // Added to allow faster switching from prod to test, comment renders and uncomment test to switch
 
-  // host: 'localhost:3000',
-  // schemes: ["http"],
+  host: 'localhost:3000',
+  schemes: ["http"],
 
-  host: 'organizeme-xtcl.onrender.com',
-  schemes: ["https"],
+  // host: 'organizeme-xtcl.onrender.com',
+  // schemes: ["https"],
   components: {
     schemas: {
       User: {
