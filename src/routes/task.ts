@@ -1,12 +1,17 @@
 import express from 'express';
+import { isAuthenticated, createTask, getTasks, getTask, updateTask, deleteTask } from '../controllers/taskController';
 
 const taskRouter = express.Router();
 
+// Apply authentication middleware to all task routes
+taskRouter.use(isAuthenticated);
+
 // Create a new task
-taskRouter.post('/task', (req, res) => {
-    /* #swagger.task = ['Tasks']
+taskRouter.post('/', (req, res) => {
+    /* #swagger.tags = ['Tasks']
        #swagger.summary = 'Create a new task'
-       #swagger.description = 'Create a new task.'
+       #swagger.description = 'Create a new task. Requires authentication.'
+       #swagger.security = [{ "session": [] }]
        #swagger.requestBody = {
            required: true,
            content: {
@@ -24,15 +29,17 @@ taskRouter.post('/task', (req, res) => {
            }
        }
        #swagger.responses[400] = { description: 'Bad request' }
+       #swagger.responses[401] = { description: 'Unauthorized' }
     */
-    res.send('Create task handler is not implemented yet');
+    return createTask(req, res);
 });
 
 // Get all tasks
-taskRouter.get('/task', (req, res) => {
-    /* #swagger.task = ['Tasks']
+taskRouter.get('/', (req, res) => {
+    /* #swagger.tags = ['Tasks']
        #swagger.summary = 'Get all tasks'
-       #swagger.description = 'Retrieve all tasks in the system.'
+       #swagger.description = 'Retrieve all tasks for the authenticated user.'
+       #swagger.security = [{ "session": [] }]
        #swagger.responses[200] = {
            description: 'Tasks retrieved successfully',
            content: {
@@ -44,15 +51,17 @@ taskRouter.get('/task', (req, res) => {
                }
            }
        }
+       #swagger.responses[401] = { description: 'Unauthorized' }
     */
-    res.send('Get all tasks handler is not implemented yet');
+    return getTasks(req, res);
 });
 
 // Get a single task by ID
-taskRouter.get('/task/:id', (req, res) => {
-    /* #swagger.task = ['Tasks']
+taskRouter.get('/:id', (req, res) => {
+    /* #swagger.tags = ['Tasks']
        #swagger.summary = 'Get a task by ID'
-       #swagger.description = 'Fetch a task by its ID.'
+       #swagger.description = 'Fetch a task by its ID. User can only access their own tasks.'
+       #swagger.security = [{ "session": [] }]
        #swagger.parameters['id'] = {
            in: 'path',
            required: true,
@@ -69,16 +78,18 @@ taskRouter.get('/task/:id', (req, res) => {
                }
            }
        }
+       #swagger.responses[401] = { description: 'Unauthorized' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send('Get task by ID handler is not implemented yet');
+    return getTask(req, res);
 });
 
 // Update a task by ID
-taskRouter.put('/task/:id', (req, res) => {
-    /* #swagger.task = ['Tasks']
+taskRouter.put('/:id', (req, res) => {
+    /* #swagger.tags = ['Tasks']
        #swagger.summary = 'Update a task'
-       #swagger.description = 'Update an existing task by its ID.'
+       #swagger.description = 'Update an existing task by its ID. User can only update their own tasks.'
+       #swagger.security = [{ "session": [] }]
        #swagger.parameters['id'] = {
            in: 'path',
            required: true,
@@ -101,19 +112,33 @@ taskRouter.put('/task/:id', (req, res) => {
                'application/json': {
                    schema: { $ref: '#/components/schemas/Task' }
                }
-           }
+           }nst TaskSchema: Schema = new Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  dueDate: { type: Date },
+  completed: { type: Boolean, default: false },
+  userId: { type: String, required: true },  // Store GitHub user ID
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+}, { collection: 'tasks' });
+
+const Task = mongoose.model<ITask>('Task', TaskSchema);
+
+export default Task;
        }
        #swagger.responses[400] = { description: 'Bad request' }
+       #swagger.responses[401] = { description: 'Unauthorized' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send('Update task handler is not implemented yet');
+    return updateTask(req, res);
 });
 
 // Delete a task by ID
-taskRouter.delete('/task/:id', (req, res) => {
-    /* #swagger.task = ['Tasks']
+taskRouter.delete('/:id', (req, res) => {
+    /* #swagger.tags = ['Tasks']
        #swagger.summary = 'Delete a task'
-       #swagger.description = 'Delete a task by its ID.'
+       #swagger.description = 'Delete a task by its ID. User can only delete their own tasks.'
+       #swagger.security = [{ "session": [] }]
        #swagger.parameters['id'] = {
            in: 'path',
            required: true,
@@ -123,9 +148,10 @@ taskRouter.delete('/task/:id', (req, res) => {
            description: 'ID of the task'
        }
        #swagger.responses[200] = { description: 'Task deleted successfully' }
+       #swagger.responses[401] = { description: 'Unauthorized' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send('Delete task handler is not implemented yet');
+    return deleteTask(req, res);
 });
 
 export default taskRouter;
