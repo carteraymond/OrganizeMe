@@ -50,10 +50,11 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     return;
   }
 
-  // Debug logs
-  console.log('Received GitHub code:', code);
-  console.log('Using CLIENT_ID:', CLIENT_ID);
-  console.log('Using REDIRECT_URI:', REDIRECT_URI);
+  // Debug logs ----------------------------------------
+  // console.log('Received GitHub code:', code);
+  // console.log('Using CLIENT_ID:', CLIENT_ID);
+  // console.log('Using REDIRECT_URI:', REDIRECT_URI);
+  // Debug logs ----------------------------------------
 
   try {
     // Exchange code for access token using JSON format for cleaner parsing
@@ -72,7 +73,10 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
       },
     });
 
-    console.log('Token response:', tokenResponse.data);
+    // Debug logs ----------------------------------------
+    // console.log('Token response:', tokenResponse.data);
+    // Debug logs ----------------------------------------
+
     const access_token = tokenResponse.data.access_token;
     
     // Early token validation prevents unnecessary API calls
@@ -92,7 +96,10 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     });
 
     const userInfo = userInfoResponse.data;
+
+    // Debug logs ----------------------------------------
     console.log('User info received:', userInfo);
+    // Debug logs ----------------------------------------
 
     // Store minimal user data in session for future requests
     req.session.user = {
@@ -101,7 +108,7 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
       email: userInfo.email,
     };
 
-    res.redirect('/auth/home');
+    res.redirect('/home');
     return;
   } catch (error) {
     // Structured error logging helps debug OAuth issues
@@ -130,17 +137,5 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
   }
 }
 
-async function loadHomePage(req: CustomRequest, res: Response): Promise<void> {
-  // Security check to prevent unauthorized access to home page
-  if (!req.session.user) {
-      res.redirect('/auth');
-      return;
-  }
- 
-  res.render('home', {
-      title: 'Home',
-      user: req.session.user
-  });
-}
 
-export { loadSignInPage, loadHomePage, auth };
+export { loadSignInPage, auth, CustomRequest };
