@@ -8,3 +8,28 @@ content-type: application/json
     "email": "coq@gmail.com",
     "password": "strongPass"
 }
+
+
+### Get User By ID
+GET https://organizeme-xtcl.onrender.com/user/6711751e6c275bdbbbffcc46
+content-type: application/json
+
+
+### Update By ID
+PUT https://organizeme-xtcl.onrender.com/user/6711751e6c275bdbbbffcc46
+content-type: application/json
+
+{
+    "firstName": "Coquito",
+    "lastName": "Sanabria",
+    "email": "coq@gmail.com",
+    "password": "strongPass123"
+}
+
+### Get All Users
+GET https://organizeme-xtcl.onrender.com/user
+content-type: application/json
+
+### Delete by ID
+DELETE https://organizeme-xtcl.onrender.com/user/6711751e6c275bdbbbffcc46
+content-type: application/json

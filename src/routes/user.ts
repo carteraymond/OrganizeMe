@@ -1,4 +1,4 @@
-import { create, getAll } from '../controllers/userController';
+import { create, getAll, getById, remove, update } from '../controllers/userController';
 import express from 'express';
 
 const userRouter = express.Router();
@@ -55,7 +55,7 @@ userRouter.post('/', create);
  */
 userRouter.get('/', getAll);
 
-userRouter.get('/:id', (req, res) => {
+userRouter.get('/:id', getById
     /* #swagger.tags = ['User']
        #swagger.summary = 'Get a user by ID'
        #swagger.description = 'Fetch a user by their ID.'
@@ -77,7 +77,9 @@ userRouter.get('/:id', (req, res) => {
        }
        #swagger.responses[404] = { description: 'User not found' }
     */
-    res.send('Get user by ID handler is not implemented yet');
-});
+);
+
+userRouter.put('/:id', update);
+userRouter.delete('/:id', remove);
 
 export default userRouter;
