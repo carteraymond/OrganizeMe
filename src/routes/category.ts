@@ -1,17 +1,28 @@
 import express from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { createCategoryController, deleteCategoryController, getAllCategoriesController } from '../controllers/categoryController';
 
 const categoryRouter = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Category
+ *   description: Operations related to categories
+ */
+
+
 // Create a new category
-categoryRouter.post('/category', (req, res) => {
-    /* #swagger.category = ['category']
+categoryRouter.post(
+    '/', 
+    /* #swagger.tags = ['category']
        #swagger.summary = 'Create a new category'
        #swagger.description = 'Create a new category for a user.'
        #swagger.requestBody = {
            required: true,
            content: {
                'application/json': {
-                   schema: { $ref: '#/components/schemas/category' }
+                   schema: { $ref: '#/components/schemas/Category' }
                }
            }
        }
@@ -19,18 +30,17 @@ categoryRouter.post('/category', (req, res) => {
            description: 'category created successfully',
            content: {
                'application/json': {
-                   schema: { $ref: '#/components/schemas/category' }
+                   schema: { $ref: '#/components/schemas/Category' }
                }
            }
        }
        #swagger.responses[400] = { description: 'Bad request' }
     */
-    res.send('Create category handler is not implemented yet');
-});
+    createCategoryController);
 
 // Get all category
-categoryRouter.get('/category', (req, res) => {
-    /* #swagger.category = ['category']
+categoryRouter.get('/', getAllCategoriesController)
+    /* #swagger.tags = ['category']
        #swagger.summary = 'Get all category'
        #swagger.description = 'Retrieve all categories for the user.'
        #swagger.responses[200] = {
@@ -39,79 +49,16 @@ categoryRouter.get('/category', (req, res) => {
                'application/json': {
                    schema: {
                        type: 'array',
-                       items: { $ref: '#/components/schemas/category' }
+                       items: { $ref: '#/components/schemas/Category' }
                    }
                }
            }
        }
     */
-    res.send('Get all category handler is not implemented yet');
-});
-
-// Get a single category by ID
-categoryRouter.get('/category/:id', (req, res) => {
-    /* #swagger.category = ['category']
-       #swagger.summary = 'Get a category by ID'
-       #swagger.description = 'Fetch a category by its unique ID.'
-       #swagger.parameters['id'] = {
-           in: 'path',
-           required: true,
-           schema: {
-               type: 'string',
-           },
-           description: 'The unique ID of the category'
-       }
-       #swagger.responses[200] = {
-           description: 'category found',
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/category' }
-               }
-           }
-       }
-       #swagger.responses[404] = { description: 'category not found' }
-    */
-    res.send('Get category by ID handler is not implemented yet');
-});
-
-// Update a category by ID
-categoryRouter.put('/category/:id', (req, res) => {
-    /* #swagger.category = ['category']
-       #swagger.summary = 'Update a category'
-       #swagger.description = 'Update an existing category by its ID.'
-       #swagger.parameters['id'] = {
-           in: 'path',
-           required: true,
-           schema: {
-               type: 'string',
-           },
-           description: 'The unique ID of the category'
-       }
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/category' }
-               }
-           }
-       }
-       #swagger.responses[200] = {
-           description: 'category updated successfully',
-           content: {
-               'application/json': {
-                   schema: { $ref: '#/components/schemas/category' }
-               }
-           }
-       }
-       #swagger.responses[400] = { description: 'Bad request' }
-       #swagger.responses[404] = { description: 'category not found' }
-    */
-    res.send('Update category handler is not implemented yet');
-});
 
 // Delete a category by ID
-categoryRouter.delete('/category/:id', (req, res) => {
-    /* #swagger.category = ['category']
+categoryRouter.delete('/:id', deleteCategoryController);
+    /* #swagger.tags = ['category']
        #swagger.summary = 'Delete a category'
        #swagger.description = 'Delete a category by its ID.'
        #swagger.parameters['id'] = {
@@ -122,10 +69,16 @@ categoryRouter.delete('/category/:id', (req, res) => {
            },
            description: 'ID of the category'
        }
-       #swagger.responses[200] = { description: 'category deleted successfully' }
+       #swagger.responses[200] = { 
+            description: 'category deleted successfully' }
+            content: {
+                'application/json': {
+                   schema: {
+                       items: { $ref: '#/components/schemas/Category' }
+                   }
+            }
        #swagger.responses[404] = { description: 'category not found' }
+       #swagger.responses[400] = { description: 'Bad request' }
     */
-    res.send('Delete category handler is not implemented yet');
-});
 
 export default categoryRouter;
