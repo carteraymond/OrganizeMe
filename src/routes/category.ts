@@ -39,8 +39,8 @@ categoryRouter.post(
     createCategoryController);
 
 // Get all category
-categoryRouter.get('/', getAllCategoriesController)
-    /* #swagger.tags = ['category']
+categoryRouter.get('/', getAllCategoriesController
+    /* #swagger.tags = ['Category']
        #swagger.summary = 'Get all category'
        #swagger.description = 'Retrieve all categories for the user.'
        #swagger.responses[200] = {
@@ -55,10 +55,11 @@ categoryRouter.get('/', getAllCategoriesController)
            }
        }
     */
+    );
 
 // Delete a category by ID
-categoryRouter.delete('/:id', deleteCategoryController);
-    /* #swagger.tags = ['category']
+categoryRouter.delete('/:id', deleteCategoryController
+    /* #swagger.tags = ['Category']
        #swagger.summary = 'Delete a category'
        #swagger.description = 'Delete a category by its ID.'
        #swagger.parameters['id'] = {
@@ -67,7 +68,7 @@ categoryRouter.delete('/:id', deleteCategoryController);
            schema: {
                type: 'string',
            },
-           description: 'ID of the category'
+           description: 'ID of the category to delete'
        }
        #swagger.responses[200] = { 
             description: 'category deleted successfully' }
@@ -76,9 +77,11 @@ categoryRouter.delete('/:id', deleteCategoryController);
                    schema: {
                        items: { $ref: '#/components/schemas/Category' }
                    }
+                }               
             }
        #swagger.responses[404] = { description: 'category not found' }
        #swagger.responses[400] = { description: 'Bad request' }
     */
+    );
 
 export default categoryRouter;
