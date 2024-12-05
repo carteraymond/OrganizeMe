@@ -6,7 +6,7 @@ content-type: application/json
     "firstName": "Coquito",
     "lastName": "Sanabria",
     "email": "coq@gmail.com",
-    "password": "strongPass"
+    "passwordHash": "strongPass"
 }
 
 
@@ -23,7 +23,7 @@ content-type: application/json
     "firstName": "Coquito",
     "lastName": "Sanabria",
     "email": "coq@gmail.com",
-    "password": "strongPass123"
+    "passwordHash": "strongPass123"
 }
 
 ### Get All Users
