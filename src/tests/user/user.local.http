@@ -6,5 +6,29 @@ content-type: application/json
     "firstName": "Coquito",
     "lastName": "Sanabria",
     "email": "coq@gmail.com",
-    "password": "strongPass"
+    "passwordHash": "strongPass"
 }
+
+
+### Get User By ID
+GET http://localhost:3000/user/6711751e6c275bdbbbffcc46
+content-type: application/json
+
+### Update By ID
+PUT http://localhost:3000/user/6711751e6c275bdbbbffcc46
+content-type: application/json
+
+{
+    "firstName": "Coquito",
+    "lastName": "Sanabria",
+    "email": "coq@gmail.com",
+    "passwordHash": "strongPass123"
+}
+
+### Get All Users
+GET http://localhost:3000/user
+content-type: application/json
+
+### Delete by ID
+DELETE http://localhost:3000/user/6711751e6c275bdbbbffcc46
+content-type: application/json
