@@ -87,7 +87,7 @@ const doc = {
         },
         required: ['title', 'description', 'dueDate', 'priority'],
       },
-      category: {
+      Category: {
         type: 'object',
         properties: {
           _id: {
@@ -154,7 +154,7 @@ const doc = {
       description: 'Operations related to tasks',
     },
     {
-      name: 'category',
+      name: 'Category',
       description: 'Operations related to category',
     },
     {
