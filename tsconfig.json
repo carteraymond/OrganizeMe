@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "commonjs",
+      "target": "ES6",
+      "resolveJsonModule": true,
+    }
+  }
+  

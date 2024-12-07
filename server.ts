@@ -20,3 +20,6 @@ app.listen(port, (): void => {
 // import { createNewUser } from './services/userService';
 
 // var createdUser = await createNewUser("test@test.com", "hash", "Johnny", "Sanabria");
+
+// Export for testing
+export { app };

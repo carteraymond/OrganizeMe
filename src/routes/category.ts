@@ -1,5 +1,5 @@
 import express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { createCategoryController, deleteCategoryController, getAllCategoriesController } from '../controllers/categoryController';
 
 const categoryRouter = express.Router();
@@ -58,7 +58,7 @@ categoryRouter.get('/', getAllCategoriesController
     );
 
 // Delete a category by ID
-categoryRouter.delete('/:id', deleteCategoryController
+categoryRouter.delete('/:id', deleteCategoryController);
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Delete a category'
        #swagger.description = 'Delete a category by its ID.'
@@ -82,6 +82,6 @@ categoryRouter.delete('/:id', deleteCategoryController
        #swagger.responses[404] = { description: 'category not found' }
        #swagger.responses[400] = { description: 'Bad request' }
     */
-    );
+    
 
 export default categoryRouter;
