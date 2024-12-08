@@ -1,0 +1,36 @@
+### Get All Tasks
+GET https://organizeme-xtcl.onrender.com/task HTTP/1.1;
+
+### Get Task by Id
+GET https://organizeme-xtcl.onrender.com/task/123456765432 HTTP/1.1
+
+### Create Task 
+POST https://organizeme-xtcl.onrender.com/task
+content-type: application/json
+
+{
+    "title": "Complete Final Project",
+    "description": "I need to complete the final project and get a passing grade",
+    "dueDate": "12-4-2024",
+    "status": "active",
+    "priority": "High",
+    "userId":"WIP",
+    "tags":"School, Homework, Project",
+    "categoryId":"WIP"
+}
+### Update Task
+PUT https://organizeme-xtcl.onrender.com/task/1454321432 HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Complete Final Project",
+    "description": "I need to complete the final project and get a passing grade",
+    "dueDate": "12-4-2024",
+    "status": "active",
+    "priority": "High",
+    "userId":"WIP",
+    "tags":"School, Homework, Project",
+    "categoryId":"WIP"
+}
+### Delete Task
+DELETE https://organizeme-xtcl.onrender.com/task/1454323432123 HTTP/1.1
