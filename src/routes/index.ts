@@ -7,7 +7,7 @@ import homeRouter from './home';
 import taskRouter from './task';
 import categoryRouter from './category';
 import logRouter from './log';
-import { requireAuth } from '../middleware/authMiddleware';
+import { requireAuth, requireAuthAPI } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -16,11 +16,13 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 router.use('/auth', authRouter);
 
 // Protected routes (auth required)
-router.use('/user', requireAuth, userRouter);
+// requireAuth redirects browser to /auth if not logged in
+// requireAuthAPI returns 401 in json if not logged in
 router.use('/home', requireAuth, homeRouter);
-router.use('/task', requireAuth, taskRouter);
-router.use('/category', requireAuth, categoryRouter);
-router.use('/log', requireAuth, logRouter);
+router.use('/user', requireAuthAPI, userRouter);
+router.use('/task', requireAuthAPI, taskRouter);
+router.use('/category', requireAuthAPI, categoryRouter);
+router.use('/log', requireAuthAPI, logRouter);
 
 // Default redirect to auth if not logged in
 router.get('/', (req: Request, res: Response): void => {

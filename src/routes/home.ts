@@ -1,6 +1,6 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { loadSignInPage, loadHomePage, auth } from '../controllers/homeController';
+import { loadHomePage } from '../controllers/homeController';
 
 const homeRouter = express.Router();
 

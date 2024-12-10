@@ -40,7 +40,7 @@ taskRouter.get('/task/:id', (req, res) => {
 });
 
 // Update a task by ID
-taskRouter.put('/task/:id', (req, res) => {
+taskRouter.put('/task/:id', async (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Update a task'
        #swagger.description = 'Update an existing task by its ID.'
@@ -71,11 +71,21 @@ taskRouter.put('/task/:id', (req, res) => {
        #swagger.responses[400] = { description: 'Bad request' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send(update);
+    try {
+        const taskId = req.params.id;
+        const updatedTask = await update(taskId, req.body);
+        if (updatedTask) {
+            res.status(200).json(updatedTask);
+        } else {
+            res.status(404).json({ error: 'Task not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update task' });
+    }
 });
 
 // Delete a task by ID
-taskRouter.delete('/task/:id', (req, res) => {
+taskRouter.delete('/task/:id', async (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Delete a task'
        #swagger.description = 'Delete a task by its ID.'
@@ -90,7 +100,16 @@ taskRouter.delete('/task/:id', (req, res) => {
        #swagger.responses[200] = { description: 'Task deleted successfully' }
        #swagger.responses[404] = { description: 'Task not found' }
     */
-    res.send(remove);
+    try {
+        const isDeleted = await remove(req.params.id);
+        if (isDeleted) {
+            res.status(200).json({ message: 'Task deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Task not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        res.status(500).json({ message: 'Failed to delete task', error: error.message });
+    }
 });
-
 export default taskRouter;
