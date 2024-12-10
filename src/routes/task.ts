@@ -1,7 +1,11 @@
 import express from 'express';
 import { create, getAll, getId, remove, update } from '../controllers/taskController';
+import { requireAuthAPI } from '../middleware/authMiddleware';
 
 const taskRouter = express.Router();
+
+
+taskRouter.use(requireAuthAPI);
 
 // Create a new task
 taskRouter.post('/task', create);

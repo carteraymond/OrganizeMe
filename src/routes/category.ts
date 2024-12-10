@@ -1,6 +1,7 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import { createCategoryController, deleteCategoryController, getAllCategoriesController } from '../controllers/categoryController';
+import { requireAuthAPI } from '../middleware/authMiddleware';
 
 const categoryRouter = express.Router();
 
@@ -84,4 +85,8 @@ categoryRouter.delete('/:id', deleteCategoryController
     */
     );
 
-export default categoryRouter;
+    export default categoryRouter;
+
+
+
+
