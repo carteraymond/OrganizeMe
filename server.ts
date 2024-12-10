@@ -7,6 +7,9 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import connectDB from './src/database/mongodb';
 
+// var winston = require('winston'),
+//     expressWinston = require('express-winston');
+
 // Load environment variables before any other operations to ensure all configs are available
 dotenv.config();
 
@@ -35,22 +38,22 @@ if (!process.env.SESSION_SECRET) {
 // Session configuration with secure defaults
 // resave: false prevents unnecessary session saves
 // saveUninitialized: true ensures compliance with laws requiring permission before setting cookies
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true
-}));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET,
+//   resave: false,
+//   saveUninitialized: true
+// }));
 
 // Configure view engine and static file serving
 // Views are kept in src/views 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '/src/views'));
+// app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, '/src/views'));
 
 // Serve static files from src/public with absolute path resolution
-app.use(express.static(path.join(__dirname, 'src/public')));
+// app.use(express.static(path.join(__dirname, 'src/public')));
 
 // Parse JSON payloads for REST API endpoints
-app.use(express.json());
+// app.use(express.json());
 
 app.use('/', routes);
 

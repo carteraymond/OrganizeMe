@@ -10,7 +10,7 @@ taskRouter.post('/task', create);
 taskRouter.get('/task', getAll);
 
 // Get a single task by ID
-taskRouter.get('/task/:id', (req, res) => {
+taskRouter.get('/:id', (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Get a task by ID'
        #swagger.description = 'Fetch a task by its ID.'
@@ -36,7 +36,7 @@ taskRouter.get('/task/:id', (req, res) => {
 });
 
 // Update a task by ID
-taskRouter.put('/task/:id', (req, res) => {
+taskRouter.put('/:id', (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Update a task'
        #swagger.description = 'Update an existing task by its ID.'
@@ -71,7 +71,7 @@ taskRouter.put('/task/:id', (req, res) => {
 });
 
 // Delete a task by ID
-taskRouter.delete('/task/:id', (req, res) => {
+taskRouter.delete('/:id', (req, res) => {
     /* #swagger.task = ['Tasks']
        #swagger.summary = 'Delete a task'
        #swagger.description = 'Delete a task by its ID.'

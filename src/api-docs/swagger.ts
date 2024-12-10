@@ -7,8 +7,11 @@ const doc = {
     version: '1.0.0',
     description: 'API documentation for the OrganizeMe project',
   },
-  host: 'organizeme-xtcl.onrender.com',
-  schemes: ["https"],
+  // host: 'organizeme-xtcl.onrender.com',
+  // schemes: ["https"],
+
+  host: 'localhost:3000',
+  schemes: ["http"],
   components: {
     schemas: {
       User: {
