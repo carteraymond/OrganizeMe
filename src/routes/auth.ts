@@ -1,6 +1,6 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { loadSignInPage, loadHomePage, auth } from '../controllers/authController';
+import { loadSignInPage, auth } from '../controllers/authController';
 
 const authRouter = express.Router();
 
@@ -12,7 +12,5 @@ authRouter.get('/github', (req: Request, res: Response) => {
 });
 
 authRouter.get('/github/callback', auth);
-authRouter.get('/home', loadHomePage);
-
 
 export default authRouter;

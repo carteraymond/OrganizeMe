@@ -8,14 +8,16 @@ import {
 } from "../services/taskService";
 
 const create = async (req: Request, res: Response) => {
+  // Get the current user's ID from the session
   try {
+    const userId = (req as any).session.user.id.toString();
     const newTask = await createTask(
       req.body.title,
       req.body.description,
       req.body.dueDate,
       req.body.status,
       req.body.priority,
-      req.body.userId,
+      userId,
       req.body.tags,
       req.body.categoryId
     );
@@ -25,23 +27,28 @@ const create = async (req: Request, res: Response) => {
   }
 };
 
-const update = async (req: Request, res: Response) => {
+const update = async (taskId: string, taskData: any) => {
   try {
     const updatedTask = await updateTask(
-      req.body.title,
-      req.body.description,
-      req.body.status,
-      req.body.tags
+      taskId,
+      taskData.title,
+      taskData.description,
+      taskData.status,
+      taskData.priority,
+      taskData.dueDate,
+      taskData.tags
     );
-    res.send(updatedTask);
+    return updatedTask;
   } catch (error) {
-    res.status(500).send({ error: "Failed to update task" });
+    throw new Error("Failed to update task");
   }
 };
+
 const getAll = async (req: Request, res: Response) => {
   try {
-    const getAll = await getAllTask();
-    res.send(getAll);
+    const userId = (req as any).session.user.id.toString();
+    const tasks = await getAllTask(userId);
+    res.send(tasks);
   } catch (error) {
     res.status(500).send({ error: "Failed to get all tasks" });
   }
@@ -49,23 +56,23 @@ const getAll = async (req: Request, res: Response) => {
 
 const getId = async (req: Request, res: Response) => {
   try {
-    const getId = await getIdTask(req.body.id);
-    res.send(getId);
+    const task = await getIdTask(req.params.id);
+    if (task) {
+      res.send(task);
+    } else {
+      res.status(404).send({ error: "Task not found" });
+    }
   } catch (error) {
     res.status(500).send({ error: "Failed to get task" });
   }
 };
 
-const remove = async (req: Request, res: Response) => {
+const remove = async (id: string): Promise<any> => {
   try {
-    const deletedTask = await deleteTask(req.body.id);
-    if (deletedTask != null) {
-      res.send({ message: "Task Deleted" });
-    } else {
-      res.status(404).send({ message: "Task not found" });
-    }
+    const deletedTask = await deleteTask(id);
+    return deletedTask;
   } catch (error) {
-    res.status(500).send({ error: "Failed to delete task" });
+    throw error;
   }
 };
 
