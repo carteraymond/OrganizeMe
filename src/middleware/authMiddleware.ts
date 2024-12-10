@@ -1,30 +1,39 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { CustomRequest } from '../controllers/authController';
 
-export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+export const requireAuth: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     const customReq = req as CustomRequest;
-    
+
     if (!customReq.session || !customReq.session.user) {
         console.log('Unauthorized access attempt - redirecting to auth');
-        return res.status(401).json({
+        res.status(401).json({
             error: 'Authentication required',
             redirect: '/auth'
         });
+        return;
     }
-    
+
     next();
 };
 
-// Use this for API routes that should return 401 without redirect
-export const requireAuthAPI = (req: Request, res: Response, next: NextFunction) => {
+export const requireAuthAPI: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     const customReq = req as CustomRequest;
-    
+
     if (!customReq.session || !customReq.session.user) {
         console.log('Unauthorized API access attempt');
-        return res.status(401).json({
+        res.status(401).json({
             error: 'Authentication required'
         });
+        return;
     }
-    
+
     next();
 };
