@@ -1,70 +1,132 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, RequestHandler } from 'express';
 import mongoose from 'mongoose';
+import { AuthRequest } from './authController';
 import {
   createCategory,
   deleteCategory,
   getAllCategories,
 } from '../services/categoryService';
 
-// Create Category Controller
-const createCategoryController = async (req: Request, res: Response) => {
-  const { name, colorHex, userId } = req.body;
-
-  // Validate required fields
-  if (!name || !colorHex || !userId) {
-    res.status(400).json({ error: 'Missing required fields: name, colorHex, and userId' });
-    return;
-  }
-
-  try {
-    const newCategory = await createCategory(name, colorHex, userId);
-    res.status(201).json({
-      message: 'Category created successfully',
-      category: newCategory,
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+// Get userId from either session or API token
+const getUserId = (req: Request | AuthRequest): string | null => {
+    // If using API token, find the user object that the auth middleware attached
+    if ((req as any).user) {
+        return (req as any).user.id.toString();
+    }
+    // If using session, get the user object from the session
+    const userReq = req as AuthRequest;
+    return userReq.session?.user?.id.toString() || null;
 };
 
-// Delete Category Controller
-const deleteCategoryController = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-
-  // Validate ID
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(404).json({ error: 'Category not found' });
-  }
-
-  try {
-    const deletedCategory = await deleteCategory(id);
-
-    if (!deletedCategory) {
-      console.warn(`Category with ID ${id} not found.`);
-      res.status(404).json({ error: 'Category not found' });
+// Create Category Controller
+export const create: RequestHandler = async (req, res, next) => {
+    const { name, colorHex } = req.body;
+    
+    // Get userId
+    const userId = getUserId(req);
+    if (!userId) {
+        res.status(401).json({ 
+            success: false,
+            error: 'User not authenticated' 
+        });
+        return;
     }
-    res.status(200).json({ message: 'Category deleted successfully', deletedCategory, });
-  } catch (err) {
-    //res.status(400).json({ error: err.message });
-    next(err);
-  }
+
+    // Validate required fields
+    if (!name || !colorHex) {
+        res.status(400).json({ 
+            success: false,
+            error: 'Missing required fields: name and colorHex' 
+        });
+        return;
+    }
+
+    try {
+        const newCategory = await createCategory(name, colorHex, userId);
+        res.status(201).json({
+            success: true,
+            message: 'Category created successfully',
+            category: newCategory,
+        });
+    } catch (error) {
+        console.error('Error in createCategory:', error);
+        res.status(400).json({
+            success: false,
+            error: (error as Error).message || 'Error creating category'
+        });
+    }
 };
 
 // Get All Categories Controller
-const getAllCategoriesController = async (req: Request, res: Response) => {
-  try {
-    const categories = await getAllCategories();
-    res.status(200).json({
-      message: 'Categories retrieved successfully',
-      categories,
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+export const getAll: RequestHandler = async (req, res, next) => {
+    // Get userId
+    const userId = getUserId(req);
+    if (!userId) {
+        res.status(401).json({ 
+            success: false,
+            error: 'User not authenticated' 
+        });
+        return;
+    }
+
+    try {
+        const categories = await getAllCategories(userId);
+        res.status(200).json({
+            success: true,
+            message: 'Categories retrieved successfully',
+            categories,
+        });
+    } catch (error) {
+        console.error('Error in getAllCategories:', error);
+        res.status(400).json({
+            success: false,
+            error: (error as Error).message || 'Error fetching categories'
+        });
+    }
 };
 
-export {
-  createCategoryController,
-  deleteCategoryController,
-  getAllCategoriesController,
+// Delete Category Controller
+export const remove: RequestHandler = async (req, res, next) => {
+    const { id } = req.params;
+    
+    // Get userId
+    const userId = getUserId(req);
+    if (!userId) {
+        res.status(401).json({ 
+            success: false,
+            error: 'User not authenticated' 
+        });
+        return;
+    }
+
+    // Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ 
+            success: false,
+            error: 'Invalid category ID' 
+        });
+        return;
+    }
+
+    try {
+        const deletedCategory = await deleteCategory(id);
+        if (!deletedCategory) {
+            res.status(404).json({ 
+                success: false,
+                error: 'Category not found' 
+            });
+            return;
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Category deleted successfully',
+            category: deletedCategory,
+        });
+    } catch (error) {
+        console.error('Error in deleteCategory:', error);
+        res.status(400).json({
+            success: false,
+            error: (error as Error).message || 'Error deleting category'
+        });
+    }
 };

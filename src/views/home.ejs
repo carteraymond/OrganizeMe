@@ -4,10 +4,12 @@
     <title>Home</title>
     <link rel="stylesheet" href="/styles/main.css">
     <script defer>
+        let categories = [];
         let currentTasks = [];
         let activeFilters = {
             status: [],
-            priority: []
+            priority: [],
+            category: []
         };
         let currentSort = {
             field: null,
@@ -19,14 +21,145 @@
                 window.location.reload();
                 return null;
             }
+            
+            const data = await response.json();
             if (!response.ok) {
-                throw new Error(errorMessage);
+                throw new Error(data.error || errorMessage);
             }
-            return response.json();
+            return data;
         }
+
+        
         // Fetch and display tasks when page loads
         window.onload = async function() {
-            await fetchTasks();
+            await Promise.all([fetchTasks(), fetchCategories()]);
+    }
+    async function createCategory(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('categoryName').value;
+    const colorHex = document.getElementById('categoryColor').value;
+    
+    try {
+        const response = await fetch('/api/category', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, colorHex })
+        });
+
+        const data = await handleResponse(response, 'Error creating category');
+        if (data && data.success) {
+            document.getElementById('createCategoryForm').reset();
+            await fetchCategories();
+            showAlert('Category created successfully', 'success');
+        }
+    } catch (error) {
+        console.error('Error creating category:', error);
+        showAlert(error.message, 'error');
+    }
+}
+
+
+        async function deleteCategory(categoryId) {
+            if (!confirm('Are you sure you want to delete this category? Tasks associated with this category will be unaffected.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/category/${categoryId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await handleResponse(response, 'Error deleting category');
+                if (data && data.success) {
+                    await fetchCategories();
+                    showAlert('Category deleted successfully', 'success');
+                }
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type}`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+
+        function updateCategoryList() {
+    const categoryList = document.getElementById('categoryList');
+    if (!categories || categories.length === 0) {
+        categoryList.innerHTML = '<div class="empty-state">No categories yet. Create one below!</div>';
+        return;
+    }
+
+    categoryList.innerHTML = categories.map(category => `
+        <div class="category-item">
+            <div class="category-info">
+                <div class="color-preview" style="background-color: ${category.colorHex}"></div>
+                <span>${category.name}</span>
+            </div>
+            <button class="delete-button" onclick="deleteCategory('${category._id}')">Delete</button>
+        </div>
+    `).join('');
+}
+function updateCategoryDropdowns() {
+    const createDropdown = document.getElementById('taskCategory');
+    const editDropdown = document.getElementById('editTaskCategory');
+    
+    const options = categories.map(category => `
+        <option value="${category._id}">
+            ${category.name}
+        </option>
+    `).join('');
+    
+    const defaultOption = '<option value="">No Category</option>';
+    
+    if (createDropdown) createDropdown.innerHTML = defaultOption + options;
+    if (editDropdown) editDropdown.innerHTML = defaultOption + options;
+}
+        function updateCategoryList() {
+            const categoryList = document.getElementById('categoryList');
+            if (!categories || categories.length === 0) {
+                categoryList.innerHTML = '<div class="empty-state">No categories yet. Create one below!</div>';
+                return;
+            }
+
+    categoryList.innerHTML = categories.map(category => `
+        <div class="category-item">
+            <div class="category-info">
+                <div class="color-preview" style="background-color: ${category.colorHex}"></div>
+                <span>${category.name}</span>
+            </div>
+            <button class="delete-button" onclick="deleteCategory('${category._id}')">Delete</button>
+        </div>
+    `).join('');
+}
+
+        async function fetchCategories() {
+            try {
+                const response = await fetch('/api/category', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await handleResponse(response, 'Error fetching categories');
+                if (data && data.success && data.categories) {
+                    categories = data.categories;
+                    updateCategoryDropdowns();
+                    updateCategoryList();
+                    updateCategoryFilters();
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                showAlert(error.message, 'error');
+            }
         }
 
         // Modal controls
@@ -105,9 +238,11 @@
                 activeFilters[type].splice(index, 1);
             }
             
-            // Update checkbox states
+            // Update checkbox state
             const checkbox = document.querySelector(`input[data-filter="${type}-${value}"]`);
-            checkbox.checked = index === -1;
+            if (checkbox) {
+                checkbox.checked = index === -1;
+            }
             
             applyFiltersAndSort();
         }
@@ -121,6 +256,13 @@
                 if (activeFilters.priority.length > 0 && !activeFilters.priority.includes(task.priority?.toLowerCase())) {
                     return false;
                 }
+                if (activeFilters.category.length > 0) {
+                    // Handle both cases where task has no category or has a category
+                    if (!task.categoryId) return false;
+                    if (!activeFilters.category.includes(task.categoryId._id)) {
+                        return false;
+                    }
+                }
                 return true;
             });
 
@@ -129,7 +271,6 @@
                     let valueA = a[currentSort.field];
                     let valueB = b[currentSort.field];
                     
-                    // Dates are special (not in a good way)
                     if (currentSort.field === 'dueDate') {
                         valueA = new Date(valueA);
                         valueB = new Date(valueB);
@@ -179,7 +320,7 @@
                         </span>
                     </div>
                     <p class="task-description" title="${task.description}">${task.description}</p>
-                    <div class="task-metadata">
+                                        <div class="task-metadata">
                         <div class="due-date">
                             <span class="metadata-label">Due:</span>
                             ${new Date(task.dueDate).toLocaleDateString('en-US', { 
@@ -194,12 +335,20 @@
                             <span class="priority-badge ${getPriorityClass(task.priority)}">
                                 ${task.priority || 'Low'} Priority
                             </span>
-                            <div class="task-tags">
-                                ${task.tags ? task.tags.map(tag => `
-                                    <span class="tag">${tag}</span>
-                                `).join('') : ''}
-                            </div>
+                        ${task.categoryId && task.categoryId.name ? `
+                        <div class="category-badge" style="
+                            background-color: ${task.categoryId.colorHex}20;
+                            color: ${task.categoryId.colorHex};
+                            border: 1px solid ${task.categoryId.colorHex};
+                            display: inline-block;
+                            padding: 0.25rem 0.75rem;
+                            border-radius: 1rem;
+                            margin: 0.5rem 0;
+                            font-size: 0.875rem;">
+                            ${task.categoryId.name}
                         </div>
+                    ` : ''}
+                    </div>
                         <div class="task-actions">
                             <button class="edit-button" onclick="openEditModal('${task._id}')">Edit</button>
                             <button class="delete-button" onclick="deleteTask('${task._id}')">Delete</button>
@@ -222,9 +371,11 @@
             document.getElementById('editTaskStatus').value = task.status || 'pending';
             document.getElementById('editTaskPriority').value = task.priority || 'low';
             document.getElementById('editTaskTags').value = task.tags ? task.tags.join(', ') : '';
+            document.getElementById('editTaskCategory').value = task.categoryId?._id || '';
 
             openModal('editTaskModal');
         }
+
 
         async function updateTask(event) {
             event.preventDefault();
@@ -236,7 +387,8 @@
                 dueDate: document.getElementById('editTaskDueDate').value,
                 status: document.getElementById('editTaskStatus').value,
                 priority: document.getElementById('editTaskPriority').value,
-                tags: document.getElementById('editTaskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+                tags: document.getElementById('editTaskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                categoryId: document.getElementById('editTaskCategory').value || null
             };
 
             try {
@@ -267,7 +419,8 @@
                 dueDate: document.getElementById('taskDueDate').value,
                 status: document.getElementById('taskStatus').value,
                 priority: document.getElementById('taskPriority').value,
-                tags: document.getElementById('taskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+                tags: document.getElementById('taskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                categoryId: document.getElementById('taskCategory').value || null
             };
 
             try {
@@ -290,6 +443,7 @@
             }
         }
 
+
         async function deleteTask(taskId) {
             if (!confirm('Are you sure you want to delete this task?')) {
                 return;
@@ -307,6 +461,78 @@
             } catch (error) {
                 console.error('Error deleting task:', error);
             }
+        }
+        // Update the sorting related functions
+        function toggleSort(field) {
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'asc';
+            }
+            
+            applyFiltersAndSort();
+            updateSortLabels();
+        }
+
+        function clearSort() {
+            currentSort.field = null;
+            currentSort.direction = 'asc';
+            applyFiltersAndSort();
+            updateSortLabels();
+        }
+
+        function updateSortLabels() {
+            // Clear all active states and directions
+            document.querySelectorAll('.sort-label').forEach(label => {
+                label.classList.remove('active');
+            });
+            document.querySelectorAll('.sort-direction').forEach(direction => {
+                direction.textContent = '';
+            });
+            
+            // Update the active sort if there is one
+            if (currentSort.field) {
+                const label = document.querySelector(`.sort-label[onclick*="${currentSort.field}"]`);
+                const direction = document.getElementById(`${currentSort.field}-direction`);
+                
+                if (label && direction) {
+                    label.classList.add('active');
+                    direction.textContent = currentSort.direction === 'asc' ? '↑ Ascending' : '↓ Descending';
+                }
+            }
+        }
+        function updateCategoryFilters() {
+            const categoryFilterSection = document.getElementById('categoryFilters');
+            if (!categories || categories.length === 0) {
+                categoryFilterSection.innerHTML = '<p class="empty-state">No categories available</p>';
+                return;
+            }
+
+            categoryFilterSection.innerHTML = categories.map(category => `
+                <label class="checkbox-label">
+                    <input type="checkbox" 
+                            data-filter="category-${category._id}"
+                            onchange="toggleFilter('category', '${category._id}')"
+                    >
+                    <div class="category-indicator" style="background-color: ${category.colorHex}"></div>
+                    ${category.name}
+                </label>
+            `).join('');
+        }
+        function clearFilters() {
+            activeFilters = {
+                status: [],
+                priority: [],
+                category: []
+            };
+            
+            // Uncheck all checkboxes
+            document.querySelectorAll('.checkbox-label input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            applyFiltersAndSort();
         }
 
         
@@ -326,26 +552,21 @@
 
         <!-- Floating Action Buttons -->
         <div class="fab-container">
-            <button class="fab fab-sort" data-sort="dueDate" data-label="Due Date" onclick="sortTasks('dueDate')" title="Sort by Due Date">
+            <button class="fab fab-category" onclick="openModal('categoryModal')" title="Manage Categories">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <path d="M4 9h16"></path>
+                    <path d="M4 15h16"></path>
+                    <path d="M10 3v18"></path>
+                    <path d="M14 3v18"></path>
                 </svg>
             </button>
-            <button class="fab fab-sort" data-sort="priority" data-label="Priority" onclick="sortTasks('priority')" title="Sort by Priority">
+            <button class="fab fab-sort" onclick="openModal('sortModal')" title="Sort Tasks">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 20h.01"></path>
-                    <path d="M7 20v-4"></path>
-                    <path d="M12 20v-8"></path>
-                    <path d="M17 20v-12"></path>
-                </svg>
-            </button>
-            <button class="fab fab-sort" data-sort="status" data-label="Status" onclick="sortTasks('status')" title="Sort by Status">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    <path d="M11 5h10"></path>
+                    <path d="M11 9h7"></path>
+                    <path d="M11 13h4"></path>
+                    <path d="M3 17l3 3 3-3"></path>
+                    <path d="M6 18V4"></path>
                 </svg>
             </button>
             <button class="fab fab-filter" onclick="openModal('filterModal')" title="Filter Tasks">
@@ -360,7 +581,7 @@
                 </svg>
             </button>
         </div>
-
+        
         <!-- Create Task Modal -->
         <div id="createTaskModal" class="modal">
             <div class="modal-content">
@@ -405,6 +626,13 @@
                         <input type="text" id="taskTags" placeholder="e.g., work, urgent, meeting">
                     </div>
                     
+                    <div class="form-group">
+                        <label for="taskCategory">Category</label>
+                        <select id="taskCategory">
+                            <option value="">No Category</option>
+                        </select>
+                    </div>
+                    
                     <div class="button-group">
                         <button type="button" class="secondary-button" onclick="closeModal('createTaskModal')">Cancel</button>
                         <button type="submit" class="primary-button">Create Task</button>
@@ -412,7 +640,63 @@
                 </form>
             </div>
         </div>
-
+        <!-- Sort Modal -->
+        <div id="sortModal" class="modal">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal('sortModal')">&times;</button>
+                <h2>Sort Tasks</h2>
+                
+                <div class="sort-section">
+                    <div class="sort-option">
+                        <label class="sort-label" onclick="toggleSort('dueDate')">
+                            <div class="sort-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <span>Due Date</span>
+                            <span class="sort-direction" id="dueDate-direction"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="sort-option">
+                        <label class="sort-label" onclick="toggleSort('priority')">
+                            <div class="sort-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 20h.01"></path>
+                                    <path d="M7 20v-4"></path>
+                                    <path d="M12 20v-8"></path>
+                                    <path d="M17 20v-12"></path>
+                                </svg>
+                            </div>
+                            <span>Priority</span>
+                            <span class="sort-direction" id="priority-direction"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="sort-option">
+                        <label class="sort-label" onclick="toggleSort('status')">
+                            <div class="sort-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <span>Status</span>
+                            <span class="sort-direction" id="status-direction"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="secondary-button" onclick="clearSort()">Clear Sort</button>
+                    <button type="button" class="primary-button" onclick="closeModal('sortModal')">Done</button>
+                </div>
+            </div>
+        </div>
         <!-- Filter Modal -->
         <div id="filterModal" class="modal">
             <div class="modal-content">
@@ -436,8 +720,8 @@
                         </label>
                     </div>
                 </div>
-                
-                <div class="filter-section">
+                <!-- The filter tasks was having overflow issues, tep fix remove filter  -->
+                <!-- <div class="filter-section">
                     <h3>Priority</h3>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
@@ -453,6 +737,16 @@
                             Low
                         </label>
                     </div>
+                </div> -->
+                <div class="filter-section category-list">
+                    <h3>Categories</h3>
+                    <div id="categoryFilters" class="checkbox-group">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="secondary-button" onclick="clearFilters()">Clear Filters</button>
+                    <button type="button" class="primary-button" onclick="closeModal('filterModal')">Apply Filters</button>
                 </div>
             </div>
         </div>
@@ -501,7 +795,14 @@
                     <label for="editTaskTags">Tags (comma-separated)</label>
                     <input type="text" id="editTaskTags" placeholder="e.g., work, urgent, meeting">
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="editTaskCategory">Category</label>
+                    <select id="editTaskCategory">
+                        <option value="">No Category</option>
+                    </select>
+                </div>
+
                 <div class="button-group">
                     <button type="button" class="secondary-button" onclick="closeModal('editTaskModal')">Cancel</button>
                     <button type="submit" class="primary-button">Update Task</button>
@@ -509,6 +810,35 @@
             </form>
         </div>
     </div>
+    <!-- Category Management Modal -->
+<div id="categoryModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('categoryModal')">&times;</button>
+        <h2>Manage Categories</h2>
+        
+        <!-- Category List -->
+        <div id="categoryList" class="category-list">
+        </div>
+
+        <!-- Create Category Form -->
+        <form id="createCategoryForm" onsubmit="createCategory(event)" class="create-category-form">
+            <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" id="categoryName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="categoryColor">Color</label>
+                <input type="color" id="categoryColor" required>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" class="secondary-button" onclick="closeModal('categoryModal')">Cancel</button>
+                <button type="submit" class="primary-button">Create Category</button>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 </body>
 </html>

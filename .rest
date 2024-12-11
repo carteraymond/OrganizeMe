@@ -13,7 +13,7 @@ Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a83
 }
 ### Get All Tasks
 GET http://localhost:3000/api/task
-Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a834807c5
+Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
 
 ### Get Task by ID
 GET http://localhost:3000/api/task/6758c1fe9026eb3847c33e8a
@@ -35,9 +35,9 @@ DELETE http://localhost:3000/api/task/6758c1fe9026eb3847c33e8a
 Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a834807c5
 
 ### Create Category
-POST http://localhost:3000/api/catagory
+POST http://localhost:3000/api/category
 Content-Type: application/json
-Authorization: Bearer 43aa66fe40c494d89dff8cf63bcd9c013c15eb7bd9ae00ee4cb04fbd6cb097e8
+Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
 
 {
   "name": "Work Projects",
@@ -47,9 +47,9 @@ Authorization: Bearer 43aa66fe40c494d89dff8cf63bcd9c013c15eb7bd9ae00ee4cb04fbd6c
 
 
 ### Get All Categories
-GET http://localhost:3000/api/catagory
-Authorization: Bearer <api-token>
+GET http://localhost:3000/api/category
+Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
 
 ### Delete Category
-DELETE http://localhost:3000/api/catagory/<category-id>
-Authorization: Bearer <api-token>
+DELETE http://localhost:3000/api/category/67590cab1eb890651a169dac
+Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361

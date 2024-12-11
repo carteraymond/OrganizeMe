@@ -1,4 +1,5 @@
 import Task from '../models/task';
+import mongoose from 'mongoose';
 
 const createTask = async (
     title: string,
@@ -7,8 +8,8 @@ const createTask = async (
     status: string,
     priority: string,
     userId: string,
-    tags: string,
-    categoryId: string,
+    tags: string[],
+    categoryId?: string
 ) => {
     const newTask = new Task({
         title,
@@ -18,7 +19,7 @@ const createTask = async (
         priority,
         userId,
         tags,
-        categoryId,
+        categoryId
     });
 
     try {
@@ -36,21 +37,29 @@ const updateTask = async (
     title?: string, 
     description?: string,
     status?: string,
-    tags?: string
+    tags?: string[],
+    categoryId?: string | null
 ) => {
     try {
-        // for partial updates
-        const updateFields: { [key: string]: string | undefined } = {};
+        // Create update object
+        const updateFields: { [key: string]: any } = {};
         if (title) updateFields.title = title;
         if (description) updateFields.description = description;
         if (status) updateFields.status = status;
         if (tags) updateFields.tags = tags;
+        if (categoryId !== undefined) {
+            updateFields.categoryId = categoryId === null ? null : new mongoose.Types.ObjectId(categoryId);
+        }
 
+        // Update task and populate category details
         const updatedTask = await Task.findByIdAndUpdate(
             id, 
             { $set: updateFields },
-            { new: true } // return updated document
-        );
+            { new: true }
+        ).populate({
+            path: 'categoryId',
+            select: 'name colorHex'
+        });
         
         return updatedTask;
     } catch (err) {
@@ -58,6 +67,7 @@ const updateTask = async (
         throw err;
     }
 };
+
 
 const deleteTask = async (id: string) => {
     try {
@@ -79,10 +89,15 @@ const getIdTask = async (id: string) => {
     }
 };
 
+
 const getAllTask = async (userId: string) => {
     try {
-        // Only return tasks for the specific user
-        const tasks = await Task.find({ userId });
+        // Return tasks for the specific user and populate category details
+        const tasks = await Task.find({ userId })
+            .populate({
+                path: 'categoryId',
+                select: 'name colorHex' // Only select the fields we need
+            });
         return tasks;
     } catch (err) {
         console.error('Error finding tasks:', err);
