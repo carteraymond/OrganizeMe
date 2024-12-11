@@ -11,69 +11,90 @@
     "https"
   ],
   "paths": {
-    "/": {
+    "/user": {
       "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
+        "summary": "Create a new User",
+        "tags": [ "User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "passwordHash": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  }
                 },
-                "password": {
-                  "example": "any"
-                },
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
+                "required": [
+                  "email",
+                  "passwordHash",
+                  "firstName",
+                  "lastName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all users",
+        "tags": [ "User" ],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "user/{id}": {
+      "get": {
+        "summary": "Get a user by ID",
+        "tags": [ "User" ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/{id}": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Get a user by ID",
-        "description": "Fetch a user by their ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the user"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User found",
+            "description": "A single user",
             "content": {
               "application/json": {
                 "schema": {
@@ -86,126 +107,110 @@
             "description": "User not found"
           }
         }
-      }
-    },
-    "/task": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "dueDate": {
-                  "example": "any"
-                },
-                "status": {
-                  "example": "any"
-                },
-                "priority": {
-                  "example": "any"
-                },
-                "userId": {
-                  "example": "any"
-                },
-                "tags": {
-                  "example": "any"
-                },
-                "categoryId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/task/{id}": {
-      "get": {
-        "summary": "Get a task by ID",
-        "description": "Fetch a task by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the task"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Task found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Task not found"
-          }
-        }
       },
       "put": {
-        "summary": "Update a task",
-        "description": "Update an existing task by its ID.",
+        "summary": "Update a user by ID",
+        "tags": [ "User" ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "User ID",
             "required": true,
-            "type": "string",
             "schema": {
               "type": "string"
-            },
-            "description": "ID of the task"
+            }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Task updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "passwordHash": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  }
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated"
+          },
+          "404": {
+            "description": "User not found"
           },
           "400": {
             "description": "Bad request"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a user by ID",
+        "tags": [ "User" ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted"
           },
           "404": {
-            "description": "Task not found"
+            "description": "User not found"
           }
-        },
+        }
+      }
+    },
+    "/task": {
+      "get": {
+        "summary": "Get all tasks",
+        "tags": [
+          "Task"
+        ],
+        "description": "Get all the tasks",
+        "responses": {
+          "200": {
+            "description": "A list of tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "Create a new task",
+        "description": "Creates a new task.",
         "requestBody": {
           "required": true,
           "content": {
@@ -215,29 +220,114 @@
               }
             }
           }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          }
         }
-      },
-      "delete": {
-        "summary": "Delete a task",
-        "description": "Delete a task by its ID.",
+      }
+    },
+    "/task/{id}": {
+      "get": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "Get a single task",
+        "description": "Retrieves a single task by its ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
             "schema": {
               "type": "string"
             },
-            "description": "ID of the task"
+            "description": "The ID of the task to retrieve."
           }
         ],
         "responses": {
           "200": {
-            "description": "Task deleted successfully"
+            "description": "Task details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Task not found"
+            "description": "Task not found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "Update a task",
+        "description": "Updates a task by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the task to update."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated successfully."
+          },
+          "404": {
+            "description": "Task not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "Delete a task",
+        "description": "Deletes a task by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the task to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted successfully."
+          },
+          "404": {
+            "description": "Task not found."
           }
         }
       }
@@ -415,32 +505,34 @@
       "User": {
         "type": "object",
         "properties": {
-          "githubId": {
+          "email": {
             "type": "string",
-            "description": "The unique GitHub ID of the user"
+            "description": "Email of the user"
           },
-          "username": {
+          "passwordHash": {
             "type": "string",
-            "description": "The username of the user"
+            "description": "The password of the user"
           },
-          "profileImgUrl": {
+          "firstName": {
             "type": "string",
-            "description": "URL to the user's profile image"
+            "description": "User's first name"
           },
-          "displayName": {
+          "lastName": {
             "type": "string",
-            "description": "The display name of the user"
+            "description": "User's last name"
           },
-          "canvasToken": {
+          "createdAt": {
             "type": "string",
-            "description": "Token used for authentication with Canvas"
+            "format": "date-time",
+            "description": "Date of User creation"
+          },
+          "updateAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the user was last updated"
           }
         },
-        "required": [
-          "githubId",
-          "username",
-          "displayName"
-        ]
+        "required": ["email", "passwordHash", "firstName", "lastName" ] 
       },
       "Task": {
         "type": "object",
@@ -498,20 +590,11 @@
             "description": "Identifier for category this task belongs to"
           }
         },
-        "required": [
-          "title",
-          "description",
-          "dueDate",
-          "priority"
-        ]
+        "required": [ "title", "description", "dueDate", "priority" ]
       },
       "category": {
         "type": "object",
         "properties": {
-          "_id": {
-            "type": "string",
-            "description": "The unique identifier for the category"
-          },
           "name": {
             "type": "string",
             "description": "The name of the category"
@@ -574,23 +657,5 @@
         ]
       }
     }
-  },
-  "category": [
-    {
-      "name": "User",
-      "description": "Operations related to users"
-    },
-    {
-      "name": "Tasks",
-      "description": "Operations related to tasks"
-    },
-    {
-      "name": "category",
-      "description": "Operations related to category"
-    },
-    {
-      "name": "Logs",
-      "description": "Operations related to logs"
-    }
-  ]
+  }
 }
