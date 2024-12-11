@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import connectDB from './src/database/mongodb';
+import requestLogger from './src/middleware/Logger';
 
 // Load environment variables before any other operations to ensure all configs are available
 dotenv.config();
@@ -51,6 +52,9 @@ app.use(express.static(path.join(__dirname, 'src/public')));
 
 // Parse JSON payloads for REST API endpoints
 app.use(express.json());
+
+// This allows every HTTP request to be logged
+app.use(requestLogger);
 
 app.use('/', routes);
 
