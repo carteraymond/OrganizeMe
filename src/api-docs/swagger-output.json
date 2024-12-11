@@ -1,6 +1,6 @@
 {
-   "swagger": "2.0",
-  "info": {
+   "openapi": "3.0.0",
+    "info": {
     "title": "OrganizeMe API",
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
@@ -77,7 +77,7 @@
         }
       }
     },
-    "user/{id}": {
+    "/user/{id}": {
       "get": {
         "summary": "Get a user by ID",
         "tags": [ "User" ],
@@ -348,9 +348,6 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "201": {
             "description": "category created successfully",
             "content": {
