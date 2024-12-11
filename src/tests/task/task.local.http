@@ -33,4 +33,4 @@ Content-Type: application/json
     "categoryId":"WIP"
 }
 ### Delete Task
-DELETE http://localhost:3000/task/1454323432123 HTTP/1.1
+DELETE http://localhost:3000/task/6757c5b2709d329630b5ad7a HTTP/1.1

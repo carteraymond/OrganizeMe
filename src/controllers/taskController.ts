@@ -51,7 +51,7 @@ const getAll = async (req: Request, res: Response) => {
 
 const getId = async (req: Request, res: Response) => {
   try {
-    const getId = await getIdTask(req.body.id);
+    const getId = await getIdTask(req.params.id);
     res.send(getId);
   } catch (error) {
     res.status(500).send({ error: "Failed to get task" });
@@ -60,9 +60,10 @@ const getId = async (req: Request, res: Response) => {
 
 const remove = async (req: Request, res: Response) => {
   try {
-    const deletedTask = await deleteTask(req.body.id);
+    // Pass the task ID (req.params.id) to deleteTask function
+    const deletedTask = await deleteTask(req.params.id);
     if (deletedTask != null) {
-      res.send({ message: "Task Deleted" });
+      res.status(400).send({ message: "Task Deleted" });
     } else {
       res.status(404).send({ message: "Task not found" });
     }
@@ -70,5 +71,6 @@ const remove = async (req: Request, res: Response) => {
     res.status(500).send({ error: "Failed to delete task" });
   }
 };
+
 
 export { create, update, getAll, getId, remove };

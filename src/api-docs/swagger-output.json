@@ -78,26 +78,18 @@
     },
     "/{id}": {
       "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Get a user by ID",
-        "description": "Fetch a user by their ID.",
+        "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the user"
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "User found",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -122,21 +114,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -178,166 +155,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/task": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "dueDate": {
-                  "example": "any"
-                },
-                "status": {
-                  "example": "any"
-                },
-                "priority": {
-                  "example": "any"
-                },
-                "userId": {
-                  "example": "any"
-                },
-                "tags": {
-                  "example": "any"
-                },
-                "categoryId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/task/{id}": {
-      "get": {
-        "summary": "Get a task by ID",
-        "description": "Fetch a task by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the task"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Task found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Task not found"
-          }
-        }
-      },
-      "put": {
-        "summary": "Update a task",
-        "description": "Update an existing task by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the task"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Task updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "404": {
-            "description": "Task not found"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Task"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete a task",
-        "description": "Delete a task by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the task"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Task deleted successfully"
-          },
-          "404": {
-            "description": "Task not found"
           }
         }
       }
