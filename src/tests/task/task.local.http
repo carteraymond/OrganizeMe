@@ -19,12 +19,12 @@ content-type: application/json
     "categoryId":"WIP"
 }
 ### Update Task
-PUT http://localhost:3000/task/674533607fe7a981880bda10 HTTP/1.1
+PUT http://localhost:3000/task/6758f95c4fef0b70a678a9e6 HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "Complete Final Project",
-    "description": "I need to complete the final project and get a passing grade",
+    "title": "update the task",
+    "description": "I need to fix updates",
     "dueDate": "12-4-2024",
     "status": "active",
     "priority": "High",
@@ -33,4 +33,4 @@ Content-Type: application/json
     "categoryId":"WIP"
 }
 ### Delete Task
-DELETE http://localhost:3000/task/6757c5b2709d329630b5ad7a HTTP/1.1
+DELETE http://localhost:3000/task/6758f95c4fef0b70a678a9e6 HTTP/1.1

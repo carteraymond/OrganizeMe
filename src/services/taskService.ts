@@ -10,32 +10,28 @@ const createTask = async (
     userId: string,
     tags: string,
     categoryId: string,
-    ) =>  {
-    
-    // for now we have userId and categoryId null until we figure out how to connect them 
+) =>  {
     const newTask = new Task({
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        status: status,
-        priority: priority,
-        userId: userId,
-        tags: tags,
-        categoryId: categoryId,
+        title,
+        description,
+        dueDate,
+        status,
+        priority,
+        userId,
+        tags,
+        categoryId,
     });
 
-    // Save new Task Model
-    let isSaved = false;
-    await newTask.save()
-    .then(task => {
+    try {
+        const task = await newTask.save();
         console.log('Task created:', task);
-        isSaved = true;
-    })
-    .catch(err => console.error(err));
-    
-    if (isSaved) return newTask;
-    else return undefined;
+        return task;  // return the saved task directly
+    } catch (err) {
+        console.error(err);
+        return undefined;  // return undefined if save fails
+    }
 };
+
 
 const updateTask = async (
     id: string,
@@ -51,35 +47,38 @@ const updateTask = async (
     if (status) updateFields.status = status;
     if (tags) updateFields.tags = tags;
 
-    // Save new Task Model
-    let isSaved = false;
-    let updatedTask = await Task.updateOne({ _id: id }, { $set: updateFields }) 
-    .then(task => {
-        console.log('Task updated:', task);
-        isSaved = true;
-    })
-    .catch(err => console.error(err));
-    
-    if (isSaved) return updatedTask;
-    else return undefined;
+    try {
+        const result = await Task.updateOne({ _id: id }, { $set: updateFields });
+        if (result.modifiedCount > 0) {
+            const updatedTask = await Task.findById(id);  // get the updated task after modifying
+            console.log('Task updated:', updatedTask);
+            return updatedTask;
+        } else {
+            console.log('No task was updated');
+            return undefined;
+        }
+    } catch (err) {
+        console.error(err);
+        return undefined;
+    }
 };
 
 const deleteTask = async (id: string) => {
-    let isDeleted = false;
-    let deletedTask = await Task.deleteOne({ _id: id })
-    .then(result => {
+    try {
+        const result = await Task.deleteOne({ _id: id });
         if (result.deletedCount > 0) {
-            console.log('task deleted:', result);
-            isDeleted = true;
+            console.log('Task deleted:', id);
+            return { message: "Task successfully deleted" };
         } else {
             console.log('No task found with the given ID.');
+            return null;
         }
-    })
-    .catch(err => console.error(err));
-    
-    if (isDeleted) return deletedTask;
-    else return undefined;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 };
+
 
 const getIdTask = async (id: string) => {
     try {
