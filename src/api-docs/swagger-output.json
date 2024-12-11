@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+   "swagger": "2.0",
   "info": {
     "title": "OrganizeMe API",
     "version": "1.0.0",
@@ -334,38 +334,19 @@
     },
     "/category": {
       "post": {
-        "tags": [ "Category "],
+        "tags": [ "Category"],
         "summary": "Create a new category",
         "description": "Create a new category for a user.",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "description": "The name of the category"
-                },
-                "colorHex": {
-                  "type": "string",
-                  "description": "The hex color code for the category",
-                  "example": "#FF5733"
-                },
-                "userId": {
-                  "type": "string",
-                  "description": "The ID of the user who owns this category"
-                }
-              },
-              "required": [
-                "name",
-                "colorHex",
-                "userId"
-              ]
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -375,7 +356,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/category"
+                  "$ref": "#/components/schemas/Category"
                 }
               }
             }
@@ -383,20 +364,10 @@
           "400": {
             "description": "Bad request"
           }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/category"
-              }
-            }
-          }
         }
       },
       "get": {
-        "tags": [ "Category "],
+        "tags": [ "Category"],
         "summary": "Get all category",
         "description": "Retrieve all categories for the user.",
         "responses": {
@@ -407,7 +378,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/category"
+                    "$ref": "#/components/schemas/Category"
                   }
                 }
               }
@@ -418,7 +389,7 @@
     },
     "/category/{id}": {
       "get": {
-        "tags": [ "Category "],
+        "tags": [ "Category"],
         "summary": "Get a category by ID",
         "description": "Fetch a category by its unique ID.",
         "parameters": [
@@ -439,7 +410,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/category"
+                  "$ref": "#/components/schemas/Category"
                 }
               }
             }
@@ -450,7 +421,7 @@
         }
       },
       "delete": {
-        "tags": [ "Category "],
+        "tags": [ "Category"],
         "summary": "Delete a category",
         "description": "Delete a category by its ID.",
         "parameters": [
@@ -462,7 +433,12 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the category"
+            "description": "ID of the category",
+            "content": {
+              "application/json": {
+                "example": { "message": "Category deleted successfully"}
+              }
+            }
           }
         ],
         "responses": {
@@ -592,7 +568,7 @@
         },
         "required": [ "title", "description", "dueDate", "priority" ]
       },
-      "category": {
+      "Category": {
         "type": "object",
         "properties": {
           "name": {

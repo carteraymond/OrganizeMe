@@ -4,18 +4,11 @@ import { createCategoryController, deleteCategoryController, getAllCategoriesCon
 
 const categoryRouter = express.Router();
 
-/**
- * @swagger
- * tags:
- *   name: Category
- *   description: Operations related to categories
- */
-
 
 // Create a new category
 categoryRouter.post(
     '/', 
-    /* #swagger.tags = ['category']
+    /* #swagger.tags = ['Category']
        #swagger.summary = 'Create a new category'
        #swagger.description = 'Create a new category for a user.'
        #swagger.requestBody = {
@@ -39,7 +32,7 @@ categoryRouter.post(
     createCategoryController);
 
 // Get all category
-categoryRouter.get('/', getAllCategoriesController
+categoryRouter.get('/', 
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Get all category'
        #swagger.description = 'Retrieve all categories for the user.'
@@ -55,10 +48,10 @@ categoryRouter.get('/', getAllCategoriesController
            }
        }
     */
-    );
+    getAllCategoriesController);
 
 // Delete a category by ID
-categoryRouter.delete('/:id', deleteCategoryController
+categoryRouter.delete('/:id', 
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Delete a category'
        #swagger.description = 'Delete a category by its ID.'
@@ -82,6 +75,6 @@ categoryRouter.delete('/:id', deleteCategoryController
        #swagger.responses[404] = { description: 'category not found' }
        #swagger.responses[400] = { description: 'Bad request' }
     */
-    );
+    deleteCategoryController);
 
 export default categoryRouter;

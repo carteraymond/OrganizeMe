@@ -14,36 +14,38 @@ const doc = {
       User: {
         type: 'object',
         properties: {
-          githubId: {
-            type: 'string',
-            description: 'The unique GitHub ID of the user',
+          "email": {
+            "type": "string",
+            "description": "Email of the user"
           },
-          username: {
-            type: 'string',
-            description: 'The username of the user',
+          "passwordHash": {
+            "type": "string",
+            "description": "The password of the user"
           },
-          profileImgUrl: {
-            type: 'string',
-            description: 'URL to the user\'s profile image',
+          "firstName": {
+            "type": "string",
+            "description": "User's first name"
           },
-          displayName: {
-            type: 'string',
-            description: 'The display name of the user',
+          "lastName": {
+            "type": "string",
+            "description": "User's last name"
           },
-          canvasToken: {
-            type: 'string',
-            description: 'Token used for authentication with Canvas',
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of User creation"
           },
+          "updateAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the user was last updated"
+          }
         },
-        required: ['githubId', 'username', 'displayName'],
+        "required": ["email", "passwordHash", "firstName", "lastName" ]
       },
       Task: {
         type: 'object',
         properties: {
-          _id: {
-            type: 'string',
-            description: 'The unique identifier for the task',
-          },
           title: {
             type: 'string',
             description: 'The title of the task',
@@ -90,10 +92,6 @@ const doc = {
       Category: {
         type: 'object',
         properties: {
-          _id: {
-            type: 'string',
-            description: 'The unique identifier for the category',
-          },
           name: {
             type: 'string',
             description: 'The name of the category',
@@ -144,13 +142,13 @@ const doc = {
       },
     },
   },
-  category: [
+  tags: [
     {
       name: 'User',
       description: 'Operations related to users',
     },
     {
-      name: 'Tasks',
+      name: 'Task',
       description: 'Operations related to tasks',
     },
     {
