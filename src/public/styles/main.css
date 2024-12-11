@@ -2,7 +2,7 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-/* Prob redundant styles in here, I copy pasted a lot */
+/* Copy and paste from my old projects */
 :root {
     --glass-bg: rgba(28, 28, 35, 0.4);
     --glass-border: rgba(255, 255, 255, 0.1);
@@ -634,6 +634,7 @@ select:focus {
     background: var(--accent-color);
     transform: translateY(-2px) scale(0.9);
 }
+/* I need to lean how to use tailwind TT */
 
 /* Tooltip styles */
 .fab {
@@ -715,4 +716,163 @@ select:focus {
 /* Edit Modal Specific Styles */
 #editTaskModal .form-group {
     margin-bottom: 1.5rem;
+}
+
+.token-management {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.token-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.token-info h3 {
+    margin: 0;
+    color: #E5E7EB;
+    font-size: 1.1rem;
+}
+
+.token-metadata {
+    margin-top: 0.5rem;
+    color: #9CA3AF;
+    font-size: 0.875rem;
+}
+
+.create-token-form {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.create-token-form h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #E5E7EB;
+}
+
+.new-token-card {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid var(--accent-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.token-value {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+.copy-button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
+
+.copy-button:hover {
+    background: var(--accent-hover);
+}
+
+.token-warning {
+    color: var(--warning-color);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}
+
+.alert {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    color: white;
+    animation: slideIn 0.3s ease-out;
+    z-index: 1000;
+}
+
+.alert.error {
+    background: var(--error-color);
+}
+
+.alert.success {
+    background: var(--success-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.empty-state {
+    text-align: center;
+    color: #9CA3AF;
+    padding: 3rem 1rem;
+}
+
+
+h2 {
+    margin-top: 0;
+    color: #E5E7EB;
+}
+
+code {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #E5E7EB;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#api-tokens-button {
+    float: right;
 }

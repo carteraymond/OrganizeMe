@@ -1,59 +1,86 @@
 import express from 'express';
 import routes from './src/routes';
 import session from 'express-session';
+import MongoStore from 'connect-mongodb-session';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import connectDB from './src/database/mongodb';
 
-// Load environment variables before any other operations to ensure all configs are available
 dotenv.config();
 
-// ES modules don't have __dirname, so I had to make them myself
+if (!process.env.SESSION_SECRET) {
+    throw new Error('SESSION_SECRET must be set in environment variables');
+}
+
+// When the app is deployed in prod, add NODE_ENV=production to env
+// When in prod:
+// - Cookies must be send over HTTPS
+// - Only alow CORS requests from our domain
+// If we set the values to this all of the time, localhost won't work
+if (process.env.NODE_ENV === 'production' && !process.env.PRODUCTION_DOMAIN) {
+    throw new Error('PRODUCTION_DOMAIN must be set in environment variables when in production mode');
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Initialize database connection early to fail fast if DB connection issues exist
-connectDB();
-
 const app = express();
 const port: number = 3000;
 
-// '*' origin is for development CHANGE FOR PROD
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Initialize MongoDB connection
+connectDB();
 
-// Validate critical environment variables early in the application lifecycle
-if (!process.env.SESSION_SECRET) {
-  throw new Error('SESSION_SECRET environment variable is required');
-}
+// Create MongoDB session store
+const MongoDBStore = MongoStore(session);
+const store = new MongoDBStore({
+    uri: process.env.MONGODB_CONN_STR || '',
+    collection: 'sessions'
+});
 
-// Session configuration with secure defaults
-// resave: false prevents unnecessary session saves
-// saveUninitialized: true ensures compliance with laws requiring permission before setting cookies
+// Catch errors in session store
+store.on('error', function(error) {
+    console.error('Session Store Error:', error);
+});
+
+// Session middleware configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        secure: process.env.NODE_ENV === 'production'
+    },
+    store: store,
+    resave: false,
+    saveUninitialized: false,
+    name: 'sessionId'
 }));
 
-// Configure view engine and static file serving
-// Views are kept in src/views 
+// Cross-Origin Resource Sharing
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DOMAIN : '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// View engine (for ejs)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/src/views'));
-
-// Serve static files from src/public with absolute path resolution
 app.use(express.static(path.join(__dirname, 'src/public')));
-
-// Parse JSON payloads for REST API endpoints
-app.use(express.json());
 
 app.use('/', routes);
 
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke :(' });
+});
+
 app.listen(port, (): void => {
-  console.log(`Server listening at ${port}`);
+    console.log(`Server listening at ${port}`);
 });

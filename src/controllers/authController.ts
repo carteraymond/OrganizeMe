@@ -10,20 +10,24 @@ const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+// Sets how the user info will be stored in the session
 interface SessionUser {
   id: number;
   name: string;
   email?: string;
 }
 
-interface CustomSession extends Session {
+// Add user info to express's built-in session interface
+interface AuthSession extends Session {
   user?: SessionUser;
 }
 
-interface CustomRequest extends Request {
-  session: CustomSession;
+// Add custom type to Request interface so TS doesn't yell at me
+interface AuthRequest extends Request {
+  session: AuthSession;
 }
 
+// Defines the structure of info received from GitHub
 interface UserInfo {
   id: number;
   name?: string;
@@ -72,7 +76,7 @@ async function createOrUpdateUser(userInfo: UserInfo) {
   }
 }
 
-async function auth(req: CustomRequest, res: Response): Promise<void> {
+async function auth(req: AuthRequest, res: Response): Promise<void> {
   const { code } = req.query;
   if (!code) {
     console.error('No code received from GitHub');
@@ -135,4 +139,4 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
   }
 }
 
-export { loadSignInPage, auth, CustomRequest };
+export { loadSignInPage, auth, AuthRequest };

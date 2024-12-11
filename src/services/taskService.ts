@@ -1,6 +1,5 @@
 import Task from '../models/task';
 
-
 const createTask = async (
     title: string,
     description: string,
@@ -10,31 +9,26 @@ const createTask = async (
     userId: string,
     tags: string,
     categoryId: string,
-    ) =>  {
-    
-    // for now we have userId and categoryId null until we figure out how to connect them 
+) => {
     const newTask = new Task({
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        status: status,
-        priority: priority,
-        userId: userId,
-        tags: tags,
-        categoryId: categoryId,
+        title,
+        description,
+        dueDate,
+        status,
+        priority,
+        userId,
+        tags,
+        categoryId,
     });
 
-    // Save new Task Model
-    let isSaved = false;
-    await newTask.save()
-    .then(task => {
-        console.log('Task created:', task);
-        isSaved = true;
-    })
-    .catch(err => console.error(err));
-    
-    if (isSaved) return newTask;
-    else return undefined;
+    try {
+        const savedTask = await newTask.save();
+        console.log('Task created:', savedTask);
+        return savedTask;
+    } catch (err) {
+        console.error('Error creating task:', err);
+        throw err;
+    }
 };
 
 const updateTask = async (
@@ -42,33 +36,22 @@ const updateTask = async (
     title?: string, 
     description?: string,
     status?: string,
-    priority?: string,
-    dueDate?: Date,
-    tags?: string[]
+    tags?: string
 ) => {
     try {
-        // Construct the update object dynamically
-        const updateFields: { [key: string]: any } = {};
-        if (title !== undefined) updateFields.title = title;
-        if (description !== undefined) updateFields.description = description;
-        if (status !== undefined) updateFields.status = status;
-        if (priority !== undefined) updateFields.priority = priority;
-        if (dueDate !== undefined) updateFields.dueDate = dueDate;
-        if (tags !== undefined) updateFields.tags = tags;
+        // for partial updates
+        const updateFields: { [key: string]: string | undefined } = {};
+        if (title) updateFields.title = title;
+        if (description) updateFields.description = description;
+        if (status) updateFields.status = status;
+        if (tags) updateFields.tags = tags;
 
-        // Find the task and update it
         const updatedTask = await Task.findByIdAndUpdate(
-            id,
+            id, 
             { $set: updateFields },
-            { new: true } // Return the updated document
+            { new: true } // return updated document
         );
-
-        if (!updatedTask) {
-            console.log('No task found with the given ID.');
-            return null;
-        }
-
-        console.log('Task updated:', updatedTask);
+        
         return updatedTask;
     } catch (err) {
         console.error('Error updating task:', err);
@@ -76,16 +59,10 @@ const updateTask = async (
     }
 };
 
-const deleteTask = async (id: string): Promise<boolean> => {
+const deleteTask = async (id: string) => {
     try {
-        const result = await Task.deleteOne({ _id: id });
-        if (result.deletedCount > 0) {
-            console.log('Task deleted:', result);
-            return true;
-        } else {
-            console.log('No task found with the given ID.');
-            return false;
-        }
+        const deletedTask = await Task.findByIdAndDelete(id);
+        return deletedTask;
     } catch (err) {
         console.error('Error deleting task:', err);
         throw err;
@@ -95,35 +72,23 @@ const deleteTask = async (id: string): Promise<boolean> => {
 const getIdTask = async (id: string) => {
     try {
         const task = await Task.findById(id);
-        if (task) {
-            console.log('Task found:', task);
-            return task;
-        } else {
-            console.log('No task found with the given ID.');
-            return undefined;
-        }
+        return task;
     } catch (err) {
-        console.error(err);
-        return undefined;
+        console.error('Error finding task:', err);
+        throw err;
     }
 };
 
 const getAllTask = async (userId: string) => {
     try {
-        const task = await Task.find({ userId: userId });
-        if (task.length > 0) {
-            console.log('Tasks found:', task);
-            return task;
-        } else {
-            console.log('No tasks found for this user.');
-            return [];
-        }
+        // Only return tasks for the specific user
+        const tasks = await Task.find({ userId });
+        return tasks;
     } catch (err) {
-        console.error(err);
-        return [];
+        console.error('Error finding tasks:', err);
+        throw err;
     }
 };
-
 
 export {
     createTask,
@@ -131,4 +96,4 @@ export {
     deleteTask,
     getIdTask,
     getAllTask
-}
+};

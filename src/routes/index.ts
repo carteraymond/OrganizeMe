@@ -8,6 +8,7 @@ import taskRouter from './task';
 import categoryRouter from './category';
 import logRouter from './log';
 import { requireAuth, requireAuthAPI } from '../middleware/authMiddleware';
+import tokenRouter from './token';
 
 const router = express.Router();
 
@@ -19,10 +20,14 @@ router.use('/auth', authRouter);
 // requireAuth redirects browser to /auth if not logged in
 // requireAuthAPI returns 401 in json if not logged in
 router.use('/home', requireAuth, homeRouter);
-router.use('/user', requireAuthAPI, userRouter);
-router.use('/task', requireAuthAPI, taskRouter);
-router.use('/category', requireAuthAPI, categoryRouter);
-router.use('/log', requireAuthAPI, logRouter);
+router.get('/token/manage', requireAuth, (req: Request, res: Response) => {
+    res.render('token');
+});
+router.use('/token', requireAuth, tokenRouter);
+router.use('/api/user', requireAuthAPI, userRouter);
+router.use('/api/task', requireAuthAPI, taskRouter);
+router.use('/api/categories', requireAuthAPI, categoryRouter);
+router.use('/api/logs', requireAuthAPI, logRouter);
 
 // Default redirect to auth if not logged in
 router.get('/', (req: Request, res: Response): void => {

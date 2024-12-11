@@ -1,79 +1,161 @@
-import { Request, Response } from "express";
+import { Request, Response, RequestHandler } from "express";
 import {
-  createTask,
-  deleteTask,
-  getAllTask,
-  getIdTask,
-  updateTask,
+    createTask,
+    deleteTask,
+    getAllTask,
+    getIdTask,
+    updateTask,
 } from "../services/taskService";
+import { AuthRequest } from './authController';
 
-const create = async (req: Request, res: Response) => {
-  // Get the current user's ID from the session
-  try {
-    const userId = (req as any).session.user.id.toString();
-    const newTask = await createTask(
-      req.body.title,
-      req.body.description,
-      req.body.dueDate,
-      req.body.status,
-      req.body.priority,
-      userId,
-      req.body.tags,
-      req.body.categoryId
-    );
-    res.status(201).send(newTask);
-  } catch (error) {
-    res.status(500).send({ error: "Failed to create task" });
-  }
-};
-
-const update = async (taskId: string, taskData: any) => {
-  try {
-    const updatedTask = await updateTask(
-      taskId,
-      taskData.title,
-      taskData.description,
-      taskData.status,
-      taskData.priority,
-      taskData.dueDate,
-      taskData.tags
-    );
-    return updatedTask;
-  } catch (error) {
-    throw new Error("Failed to update task");
-  }
-};
-
-const getAll = async (req: Request, res: Response) => {
-  try {
-    const userId = (req as any).session.user.id.toString();
-    const tasks = await getAllTask(userId);
-    res.send(tasks);
-  } catch (error) {
-    res.status(500).send({ error: "Failed to get all tasks" });
-  }
-};
-
-const getId = async (req: Request, res: Response) => {
-  try {
-    const task = await getIdTask(req.params.id);
-    if (task) {
-      res.send(task);
-    } else {
-      res.status(404).send({ error: "Task not found" });
+// Get userId from either session or API token
+const getUserId = (req: Request): string | null => {
+    // If using API token find the user object that the auth middleware attached
+    if ((req as any).user) {
+        return (req as any).user.id.toString();
     }
-  } catch (error) {
-    res.status(500).send({ error: "Failed to get task" });
-  }
+    // If using session just get the user object from the session
+    const userReq = req as AuthRequest;
+    return userReq.session?.user?.id.toString() || null;
 };
 
-const remove = async (id: string): Promise<any> => {
-  try {
-    const deletedTask = await deleteTask(id);
-    return deletedTask;
-  } catch (error) {
-    throw error;
-  }
+// Use the RequestHandler type to define the controller functions bc ts sucks
+export const create: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            res.status(401).json({ error: "User not authenticated" });
+            return;
+        }
+
+        const newTask = await createTask(
+            req.body.title,
+            req.body.description,
+            req.body.dueDate,
+            req.body.status,
+            req.body.priority,
+            userId,
+            req.body.tags,
+            req.body.categoryId
+        );
+        
+        res.status(201).json({
+            message: 'Task created successfully',
+            task: newTask
+        });
+    } catch (error) {
+        console.error('Error creating task:', error);
+        res.status(500).json({ 
+            error: "Failed to create task",
+            details: (error as Error).message 
+        });
+    }
 };
 
-export { create, update, getAll, getId, remove };
+export const update: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            res.status(401).json({ error: "User not authenticated" });
+            return;
+        }
+
+        const updatedTask = await updateTask(
+            req.params.id,
+            req.body.title,
+            req.body.description,
+            req.body.status,
+            req.body.tags
+        );
+
+        if (!updatedTask) {
+            res.status(404).json({ error: "Task not found" });
+            return;
+        }
+
+        res.json({
+            message: 'Task updated successfully',
+            task: updatedTask
+        });
+    } catch (error) {
+        console.error('Error updating task:', error);
+        res.status(500).json({ 
+            error: "Failed to update task",
+            details: (error as Error).message 
+        });
+    }
+};
+
+export const getAll: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            res.status(401).json({ error: "User not authenticated" });
+            return;
+        }
+
+        const tasks = await getAllTask(userId);
+        res.json({
+            message: 'Tasks retrieved successfully',
+            tasks: tasks
+        });
+    } catch (error) {
+        console.error('Error getting tasks:', error);
+        res.status(500).json({ 
+            error: "Failed to get tasks",
+            details: (error as Error).message 
+        });
+    }
+};
+
+export const getId: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            res.status(401).json({ error: "User not authenticated" });
+            return;
+        }
+
+        const task = await getIdTask(req.params.id);
+        if (!task) {
+            res.status(404).json({ error: "Task not found" });
+            return;
+        }
+        res.json({
+            message: 'Task retrieved successfully',
+            task: task
+        });
+    } catch (error) {
+        console.error('Error getting task:', error);
+        res.status(500).json({ 
+            error: "Failed to get task",
+            details: (error as Error).message 
+        });
+    }
+};
+
+export const remove: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = getUserId(req);
+        if (!userId) {
+            res.status(401).json({ error: "User not authenticated" });
+            return;
+        }
+
+        const deletedTask = await deleteTask(req.params.id);
+        if (!deletedTask) {
+            res.status(404).json({ error: "Task not found" });
+            return;
+        }
+        res.json({
+            message: 'Task deleted successfully',
+            task: deletedTask
+        });
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        res.status(500).json({ 
+            error: "Failed to delete task",
+            details: (error as Error).message 
+        });
+    }
+};
