@@ -1,7 +1,7 @@
 ### Make task
-POST http://localhost:3000/api/task
+POST http://localhost:3000/task
 Content-Type: application/json
-Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a834807c5
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 {
   "title": "Complete Project",
@@ -12,17 +12,17 @@ Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a83
   "tags": ["work", "urgent"]
 }
 ### Get All Tasks
-GET http://localhost:3000/api/task
-Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
+GET http://localhost:3000/task
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 ### Get Task by ID
-GET http://localhost:3000/api/task/6758c1fe9026eb3847c33e8a
-Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a834807c5
+GET http://localhost:3000/task/6758b61d239d9db7d0cca66d
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 ### Update Task
-PUT http://localhost:3000/api/task/6758c1fe9026eb3847c33e8a
+PUT http://localhost:3000/task/6758b61d239d9db7d0cca66d
 Content-Type: application/json
-Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a834807c5
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 {
   "title": "Updated Title",
@@ -31,25 +31,24 @@ Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a83
 }
 
 ### Delete Task
-DELETE http://localhost:3000/api/task/6758c1fe9026eb3847c33e8a
-Authorization: Bearer 9cba70c4b403a9cf915916481afb503d76ee60b2eaa3d21a3d01d88a834807c5
+DELETE http://localhost:3000/task/6758b61d239d9db7d0cca66d
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 ### Create Category
-POST http://localhost:3000/api/category
+POST http://localhost:3000/category
 Content-Type: application/json
-Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 {
-  "name": "Work Projects",
-  "colorHex": "#FF5733",
-  "userId": "90788595"
+  "name": "whatever",
+  "colorHex": "#FF5733"
 }
 
 
 ### Get All Categories
-GET http://localhost:3000/api/category
-Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
+GET http://localhost:3000/category
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
 
 ### Delete Category
-DELETE http://localhost:3000/api/category/67590cab1eb890651a169dac
-Authorization: Bearer 1fbc9fbc52764281aa1ea78972c4b41de34046e981d8015b9a3281563c17e361
+DELETE http://localhost:3000/category/67591a5615263aeebe40b38b
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4

@@ -41,7 +41,7 @@
     const colorHex = document.getElementById('categoryColor').value;
     
     try {
-        const response = await fetch('/api/category', {
+        const response = await fetch('/category', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -68,7 +68,7 @@
             }
 
             try {
-                const response = await fetch(`/api/category/${categoryId}`, {
+                const response = await fetch(`/category/${categoryId}`, {
                     method: 'DELETE'
                 });
 
@@ -143,7 +143,7 @@ function updateCategoryDropdowns() {
 
         async function fetchCategories() {
             try {
-                const response = await fetch('/api/category', {
+                const response = await fetch('/category', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -184,7 +184,7 @@ function updateCategoryDropdowns() {
         // Get all tasks
         async function fetchTasks() {
             try {
-                const response = await fetch('/api/task', {
+                const response = await fetch('/task', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -392,7 +392,7 @@ function updateCategoryDropdowns() {
             };
 
             try {
-                const response = await fetch(`/api/task/${taskId}`, {
+                const response = await fetch(`/task/${taskId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -424,7 +424,7 @@ function updateCategoryDropdowns() {
             };
 
             try {
-                const response = await fetch('/api/task', {
+                const response = await fetch('/task', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -450,7 +450,7 @@ function updateCategoryDropdowns() {
             }
 
             try {
-                const response = await fetch(`/api/task/${taskId}`, {
+                const response = await fetch(`/task/${taskId}`, {
                     method: 'DELETE'
                 });
 

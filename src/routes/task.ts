@@ -7,15 +7,15 @@ const TaskRouter = express.Router();
 // Apply authentication middleware to all routes
 TaskRouter.use(requireAuthAPI);
 
-// Root routes (/api/task)
+// Root routes (/task)
 const rootRoute = TaskRouter.route('/');
-rootRoute.get(getAll);    // GET /api/task
-rootRoute.post(create);   // POST /api/task
+rootRoute.get(getAll);    // GET /task
+rootRoute.post(create);   // POST /task
 
-// ID-specific routes (/api/task/:id)
+// ID-specific routes (/task/:id)
 const idRoute = TaskRouter.route('/:id');
-idRoute.get(getId);       // GET /api/task/:id
-idRoute.put(update);      // PUT /api/task/:id
-idRoute.delete(remove);   // DELETE /api/task/:id
+idRoute.get(getId);       // GET /task/:id
+idRoute.put(update);      // PUT /task/:id
+idRoute.delete(remove);   // DELETE /task/:id
 
 export default TaskRouter;
