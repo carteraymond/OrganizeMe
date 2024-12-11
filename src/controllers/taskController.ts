@@ -8,7 +8,6 @@ import {
 } from "../services/taskService";
 
 const create = async (req: Request, res: Response) => {
-  console.log('GET /task called');
   try {
     const newTask = await createTask(
       req.body.title,
@@ -40,7 +39,6 @@ const update = async (req: Request, res: Response) => {
   }
 };
 const getAll = async (req: Request, res: Response) => {
-  console.log('GET /task called Hi');
   try {
     const getAll = await getAllTask();
     res.send(getAll);

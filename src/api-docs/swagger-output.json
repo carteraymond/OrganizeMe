@@ -5,10 +5,10 @@
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
   },
-  "host": "localhost:3000",
+  "host": "organizeme-xtcl.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/": {
