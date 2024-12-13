@@ -4,7 +4,7 @@ import { AuthRequest } from './authController';
 async function loadHomePage(req: AuthRequest, res: Response): Promise<void> {
   // Security check to prevent unauthorized access to home page
     if (!req.session.user) {
-      console.error('User not authenticated');
+      console.log('User not authenticated');
     res.redirect('/auth');
     return;
     }
