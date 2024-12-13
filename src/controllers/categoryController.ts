@@ -41,6 +41,7 @@ export const create: RequestHandler = async (req, res, next) => {
         return;
     }
 
+
     try {
         const newCategory = await createCategory(name, colorHex, userId);
         res.status(201).json({

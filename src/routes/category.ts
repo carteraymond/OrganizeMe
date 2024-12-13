@@ -4,18 +4,15 @@ import { requireAuthAPI } from '../middleware/authMiddleware';
 
 const categoryRouter = express.Router();
 
-/**
- * @swagger
- * tags:
- *   name: Category
- *   description: Operations related to categories
- */
+
 
 // Create a new category
 categoryRouter.post(
     '/', 
+
     requireAuthAPI,
     create
+
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Create a new category'
        #swagger.description = 'Create a new category for a user.'
@@ -44,6 +41,7 @@ categoryRouter.get(
     '/', 
     requireAuthAPI,
     getAll
+
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Get all categories'
        #swagger.description = 'Retrieve all categories for the user.'
@@ -59,6 +57,7 @@ categoryRouter.get(
            }
        }
     */
+
 );
 
 // Delete a category by ID
@@ -66,6 +65,7 @@ categoryRouter.delete(
     '/:id', 
     requireAuthAPI,
     remove
+
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Delete a category'
        #swagger.description = 'Delete a category by its ID.'
@@ -88,6 +88,8 @@ categoryRouter.delete(
        #swagger.responses[404] = { description: 'Category not found' }
        #swagger.responses[400] = { description: 'Bad request' }
     */
+
 );
+
 
 export default categoryRouter;
