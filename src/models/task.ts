@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-
 export interface Task extends Document {
   title: string;
   description: string;
@@ -8,8 +7,8 @@ export interface Task extends Document {
   status: string;
   priority: string;
   userId: string;
-  tags: string;
-  categoryId: string;
+  tags: string[];
+  categoryId: any;
 }
 
 const TaskSchema: Schema = new Schema({
@@ -20,10 +19,13 @@ const TaskSchema: Schema = new Schema({
   priority: { type: String, required: false },
   userId: { type: String, required: true },
   tags: { type: [String], required: false },
-  categoryId: { type: String, required: false },
+  categoryId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Category',
+    required: false 
+  },
 }, { collection: 'tasks' });
 
+const Task = mongoose.model<Task>('Task', TaskSchema);
 
-  const Task = mongoose.model<Task>('Task', TaskSchema);
-  
-  export default Task;
+export default Task;

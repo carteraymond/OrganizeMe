@@ -24,10 +24,10 @@ router.get('/token/manage', requireAuth, (req: Request, res: Response) => {
     res.render('token');
 });
 router.use('/token', requireAuth, tokenRouter);
-router.use('/api/user', requireAuthAPI, userRouter);
-router.use('/api/task', requireAuthAPI, taskRouter);
-router.use('/api/categories', requireAuthAPI, categoryRouter);
-router.use('/api/logs', requireAuthAPI, logRouter);
+router.use('/user', requireAuthAPI, userRouter);
+router.use('/task', requireAuthAPI, taskRouter);
+router.use('/category', requireAuthAPI, categoryRouter);
+router.use('/log', requireAuthAPI, logRouter);
 
 // Default redirect to auth if not logged in
 router.get('/', (req: Request, res: Response): void => {
