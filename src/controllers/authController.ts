@@ -2,39 +2,41 @@ import express, { Request, Response } from 'express';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import dotenv from 'dotenv';
 import { Session } from 'express-session';
+import User from '../models/user';
 
-// Load environment variables early to fail fast if required OAuth configs are missing
 dotenv.config();
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
-// Extended types ensure type safety when dealing with session data
+// Sets how the user info will be stored in the session
 interface SessionUser {
   id: number;
   name: string;
   email?: string;
 }
 
-interface CustomSession extends Session {
+// Add user info to express's built-in session interface
+interface AuthSession extends Session {
   user?: SessionUser;
 }
 
-interface CustomRequest extends Request {
-  session: CustomSession;
+// Add custom type to Request interface so TS doesn't yell at me
+interface AuthRequest extends Request {
+  session: AuthSession;
 }
 
-// Partial type allowing for GitHub's variable user response format
+// Defines the structure of info received from GitHub
 interface UserInfo {
   id: number;
   name?: string;
-  login: string;    // Fallback when name isn't available
+  login: string;
   email?: string;
+  avatar_url?: string;
 }
 
 async function loadSignInPage(req: Request, res: Response): Promise<void> {
-  // Scope limited to user:email to follow principle of least privilege
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
   res.render('signin', {
     title: 'Sign In To Continue',
@@ -42,7 +44,39 @@ async function loadSignInPage(req: Request, res: Response): Promise<void> {
   });
 }
 
-async function auth(req: CustomRequest, res: Response): Promise<void> {
+async function createOrUpdateUser(userInfo: UserInfo) {
+  try {
+    // Try to find existing user by githubId
+    let user = await User.findOne({ githubId: userInfo.id.toString() });
+
+    if (!user) {
+      // Create new user if not found
+      user = new User({
+        githubId: userInfo.id.toString(),
+        username: userInfo.login,
+        displayName: userInfo.name || userInfo.login,
+        profileImgUrl: userInfo.avatar_url,
+        email: userInfo.email
+      });
+      await user.save();
+      console.log('New user created:', user);
+    } else {
+      // Update existing user's information
+      user.username = userInfo.login;
+      user.displayName = userInfo.name || userInfo.login;
+      user.profileImgUrl = userInfo.avatar_url;
+      user.email = userInfo.email;
+      await user.save();
+      console.log('Existing user updated:', user);
+    }
+    return user;
+  } catch (error) {
+    console.error('Error in createOrUpdateUser:', error);
+    throw error;
+  }
+}
+
+async function auth(req: AuthRequest, res: Response): Promise<void> {
   const { code } = req.query;
   if (!code) {
     console.error('No code received from GitHub');
@@ -50,13 +84,7 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     return;
   }
 
-  // Debug logs
-  console.log('Received GitHub code:', code);
-  console.log('Using CLIENT_ID:', CLIENT_ID);
-  console.log('Using REDIRECT_URI:', REDIRECT_URI);
-
   try {
-    // Exchange code for access token using JSON format for cleaner parsing
     const tokenResponse: AxiosResponse<{ access_token: string }> = await axios({
       method: 'post',
       url: 'https://github.com/login/oauth/access_token',
@@ -72,16 +100,12 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
       },
     });
 
-    console.log('Token response:', tokenResponse.data);
     const access_token = tokenResponse.data.access_token;
     
-    // Early token validation prevents unnecessary API calls
     if (!access_token) {
-      console.error('No access token in response:', tokenResponse.data);
       throw new Error('No access token received from GitHub');
     }
 
-    // Fetch user details once we have valid token
     const userInfoResponse: AxiosResponse<UserInfo> = await axios({
       method: 'get',
       url: 'https://api.github.com/user',
@@ -92,55 +116,27 @@ async function auth(req: CustomRequest, res: Response): Promise<void> {
     });
 
     const userInfo = userInfoResponse.data;
-    console.log('User info received:', userInfo);
+    
+    // Create or update user in database
+    const user = await createOrUpdateUser(userInfo);
 
-    // Store minimal user data in session for future requests
+    // Store user data in session
     req.session.user = {
       id: userInfo.id,
-      name: userInfo.name || userInfo.login,  // Fallback to login if name isn't set
+      name: userInfo.name || userInfo.login,
       email: userInfo.email,
     };
 
-    res.redirect('/auth/home');
+    res.redirect('/home');
     return;
   } catch (error) {
-    // Structured error logging helps debug OAuth issues
-    console.error('Detailed authentication error:', {
-      message: (error as AxiosError).message ?? 'Unknown error',
-      response: (error as AxiosError).response
-        ? {
-            status: (error as AxiosError).response?.status ?? 'unknown',
-            data: (error as AxiosError).response?.data ?? null,
-          }
-        : 'No response',
-      config: (() => {
-        const axiosConfig = (error as AxiosError).config;
-        if (axiosConfig) {
-          return {
-            url: axiosConfig.url ?? 'unknown',
-            method: axiosConfig.method ?? 'unknown',
-            headers: axiosConfig.headers ?? {},
-          };
-        }
-        return 'No config';
-      })(),
+    console.error('Authentication error:', {
+      message: (error as Error).message,
+      stack: (error as Error).stack,
     });
     res.status(500).send(`Authentication failed: ${(error as Error).message}`);
     return;
   }
 }
 
-async function loadHomePage(req: CustomRequest, res: Response): Promise<void> {
-  // Security check to prevent unauthorized access to home page
-  if (!req.session.user) {
-      res.redirect('/auth');
-      return;
-  }
- 
-  res.render('home', {
-      title: 'Home',
-      user: req.session.user
-  });
-}
-
-export { loadSignInPage, loadHomePage, auth };
+export { loadSignInPage, auth, AuthRequest };

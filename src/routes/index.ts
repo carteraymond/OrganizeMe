@@ -1,32 +1,37 @@
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../api-docs/swagger-output.json';
-import path from 'path';
 import userRouter from './user';
-import authRouter from './auth'
+import authRouter from './auth';
+import homeRouter from './home';
 import taskRouter from './task';
 import categoryRouter from './category';
 import logRouter from './log';
+import { requireAuth, requireAuthAPI } from '../middleware/authMiddleware';
+import tokenRouter from './token';
 
 const router = express.Router();
 
-//router.get('/api-docs', swaggerUi.serve);
-//router.get('/api-docs', swaggerUi.setup(swaggerDocument));
-
-// Serve Swagger UI for API documentation
+// Public routes (no auth required)
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+router.use('/auth', authRouter);
 
-// Change the File Path to the new index page... when we make it
+// Protected routes (auth required)
+// requireAuth redirects browser to /auth if not logged in
+// requireAuthAPI returns 401 in json if not logged in
+router.use('/home', requireAuth, homeRouter);
+router.get('/token/manage', requireAuth, (req: Request, res: Response) => {
+    res.render('token');
+});
+router.use('/token', requireAuth, tokenRouter);
+router.use('/user', requireAuthAPI, userRouter);
+router.use('/task', requireAuthAPI, taskRouter);
+router.use('/category', requireAuthAPI, categoryRouter);
+router.use('/log', requireAuthAPI, logRouter);
 
-// const __dirname = path.resolve(path.dirname(''));
-// router.get('/', (req: Request, res: Response): void => {
-//     res.sendFile(path.join(__dirname, '../dist/organize-me/browser/index.html'));
-// });
-
-router.use('/user', userRouter);
-router.use('/auth', authRouter)
-router.use('/task', taskRouter);
-router.use('/category', categoryRouter);
-router.use('/log', logRouter);
+// Default redirect to auth if not logged in
+router.get('/', (req: Request, res: Response): void => {
+    res.redirect('/auth');
+});
 
 export default router;
