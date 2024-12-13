@@ -61,10 +61,6 @@ if (process.env.NODE_ENV === 'production'){
     app.set('trust proxy', 1);
 }
 
-app.use((req, res, next) => {
-    console.log('Session Middleware Initialized:', req.session);
-    next();
-  });
 // Cross-Origin Resource Sharing
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DOMAIN : '*',

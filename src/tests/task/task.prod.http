@@ -1,5 +1,6 @@
 ### Get All Tasks
 GET https://organizeme-xtcl.onrender.com/task HTTP/1.1;
+Authorization: Bearer 1b5ee7403c5a2a1065f48c700f094d2cb6a3f01c68f87cf8c9113f6dc6376663
 
 ### Get Task by Id
 GET https://organizeme-xtcl.onrender.com/task/123456765432 HTTP/1.1

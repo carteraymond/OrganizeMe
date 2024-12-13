@@ -1,7 +1,7 @@
 ### Make task
 POST http://localhost:3000/task
 Content-Type: application/json
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer 6cd0d5e9fbad3b336e8d5b993fb7bb1d2ae64643194e8704c5e20597d426a98f
 
 {
   "title": "Complete Project",
