@@ -8,12 +8,12 @@ async function loadHomePage(req: AuthRequest, res: Response): Promise<void> {
     res.redirect('/auth');
     return;
     }
-
+    console.log('User authenticated');
     res.render('home', {
     title: 'Home',
     user: req.session.user
     });
-    console.log('User authenticated');
+    
 }
 
 export { loadHomePage };
