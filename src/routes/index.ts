@@ -19,7 +19,7 @@ router.use('/auth', authRouter);
 // Protected routes (auth required)
 // requireAuth redirects browser to /auth if not logged in
 // requireAuthAPI returns 401 in json if not logged in
-router.use('/home', requireAuth, homeRouter);
+router.use('/home', homeRouter);
 router.get('/token/manage', requireAuth, (req: Request, res: Response) => {
     res.render('token');
 });

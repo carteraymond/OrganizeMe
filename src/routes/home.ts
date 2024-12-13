@@ -4,6 +4,6 @@ import { loadHomePage } from '../controllers/homeController';
 
 const homeRouter = express.Router();
 
-homeRouter.get('/',   () => console.log(`We are Here V`));
+homeRouter.get('/', loadHomePage);
 
 export default homeRouter;
