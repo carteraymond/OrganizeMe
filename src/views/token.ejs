@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Token Management</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script>
+        // State management
+        let tokens = [];
+        let showNewTokenValue = false;
+
+        // Fetch and display tokens when page loads
+        window.onload = async function() {
+            await fetchTokens();
+        }
+
+        async function fetchTokens() {
+            try {
+                const response = await fetch('/token');
+                const data = await response.json();
+                tokens = data.tokens;
+                renderTokens();
+            } catch (error) {
+                console.error('Error fetching tokens:', error);
+                showError('Failed to load tokens');
+            }
+        }
+
+        function renderTokens() {
+            const tokenList = document.getElementById('tokenList');
+            if (!tokens || tokens.length === 0) {
+                tokenList.innerHTML = `
+                    <div class="empty-state">
+                        No API tokens yet. Create one to get started!
+                    </div>
+                `;
+                return;
+            }
+
+            tokenList.innerHTML = tokens.map(token => `
+                <div class="token-card">
+                    <div class="token-info">
+                        <h3>${escapeHtml(token.name)}</h3>
+                        <div class="token-metadata">
+                            <div>Created: ${new Date(token.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            })}</div>
+                            ${token.lastUsed ? `
+                                <div>Last used: ${new Date(token.lastUsed).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}</div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <button class="delete-button" onclick="deleteToken('${escapeHtml(token.name)}')">
+                        Delete
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function createToken(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('tokenName');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                showError('Token name is required');
+                return;
+            }
+
+            try {
+                const response = await fetch('/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to create token');
+                }
+
+                // Update for new token
+                showNewToken(data.token, name);
+                
+                // Clear
+                nameInput.value = '';
+                
+                // Refresh
+                await fetchTokens();
+            } catch (error) {
+                console.error('Error creating token:', error);
+                showError(error.message);
+            }
+        }
+
+        function showNewToken(token, name) {
+            const newTokenDisplay = document.getElementById('newTokenDisplay');
+            newTokenDisplay.innerHTML = `
+                <div class="new-token-card">
+                    <h3>New Token Created: ${escapeHtml(name)}</h3>
+                    <div class="token-value">
+                        <code>${token}</code>
+                        <button class="copy-button" onclick="copyToken('${token}')">
+                            Copy
+                        </button>
+                    </div>
+                    <div class="token-warning">
+                        Make sure to copy your token now. You won't be able to see it again!
+                    </div>
+                </div>
+            `;
+            newTokenDisplay.style.display = 'block';
+        }
+
+        async function deleteToken(name) {
+            if (!confirm(`Are you sure you want to delete the token "${name}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/token/${encodeURIComponent(name)}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error || 'Failed to delete token');
+                }
+
+                await fetchTokens();
+            } catch (error) {
+                console.error('Error deleting token:', error);
+                showError(error.message);
+            }
+        }
+
+        async function copyToken(token) {
+            try {
+                await navigator.clipboard.writeText(token);
+                showSuccess('Token copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy token:', err);
+                showError('Failed to copy token');
+            }
+        }
+
+        function showError(message) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = 'alert error';
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = 'alert success';
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Basic XSS protection (update as later)
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="/home" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Dashboard
+        </a>
+
+        <div class="token-management">
+            <h1>API Token Management</h1>
+
+            <div class="create-token-form">
+                <h2>Create New Token</h2>
+                <form onsubmit="createToken(event)">
+                    <div class="form-group">
+                        <label for="tokenName">Token Name</label>
+                        <input 
+                            type="text" 
+                            id="tokenName" 
+                            required 
+                            placeholder="e.g., Postman API Access"
+                        >
+                    </div>
+                    <button type="submit" class="primary-button">Create Token</button>
+                </form>
+            </div>
+
+            <div id="newTokenDisplay" style="display: none;"></div>
+
+            <h2>Your Tokens</h2>
+            <div id="tokenList"></div>
+        </div>
+    </div>
+
+    <div id="alert" class="alert" style="display: none;"></div>
+</body>
+</html>

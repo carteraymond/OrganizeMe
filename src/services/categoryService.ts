@@ -1,15 +1,19 @@
-
+import User from '../models/user';
 import Category from '../models/category';  // Import the Category model
 import { ICategory } from '../models/category';  // Import the ICategory interface
 
 // 1. Create Category Service
-const createCategory = async (name: string, colorHex: string, userId: string) => {
+const createCategory = async (name: string, colorHex: string, githubId: string) => {
   try {
+    const user = await User.findOne({ githubId });
+    if (!user) {
+      throw new Error('User not found');
+    }
     // Create a new category instance
     const newCategory = new Category({
       name,
       colorHex,
-      userId,
+      userId: user._id,
     });
 
     // Save the new category to the database
@@ -18,7 +22,7 @@ const createCategory = async (name: string, colorHex: string, userId: string) =>
     return newCategory;
   } catch (err) {
     console.error('Error creating category:', err);
-    throw new Error('Failed to create category');
+    throw err;
   }
 };
 
@@ -72,14 +76,19 @@ const deleteCategory = async (id: string) => {
 };*/
 
 // 5. Get All Categories
-const getAllCategories = async () => {
+const getAllCategories = async (githubId: string) => {
   try {
-    const categories = await Category.find({});
+    const user = await User.findOne({ githubId });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const categories = await Category.find({ userId: user._id });
     console.log('Categories found:', categories);
     return categories;
   } catch (err) {
     console.error('Error finding all categories:', err);
-    throw new Error('Failed to fetch categories');
+    throw err;
   }
 };
 

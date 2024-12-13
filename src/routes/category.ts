@@ -1,13 +1,18 @@
 import express from 'express';
-import { Request, Response, NextFunction } from 'express';
-import { createCategoryController, deleteCategoryController, getAllCategoriesController } from '../controllers/categoryController';
+import { create, getAll, remove } from '../controllers/categoryController';
+import { requireAuthAPI } from '../middleware/authMiddleware';
 
 const categoryRouter = express.Router();
+
 
 
 // Create a new category
 categoryRouter.post(
     '/', 
+
+    requireAuthAPI,
+    create
+
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Create a new category'
        #swagger.description = 'Create a new category for a user.'
@@ -20,7 +25,7 @@ categoryRouter.post(
            }
        }
        #swagger.responses[201] = {
-           description: 'category created successfully',
+           description: 'Category created successfully',
            content: {
                'application/json': {
                    schema: { $ref: '#/components/schemas/Category' }
@@ -29,15 +34,19 @@ categoryRouter.post(
        }
        #swagger.responses[400] = { description: 'Bad request' }
     */
-    createCategoryController);
+);
 
-// Get all category
-categoryRouter.get('/', 
+// Get all categories
+categoryRouter.get(
+    '/', 
+    requireAuthAPI,
+    getAll
+
     /* #swagger.tags = ['Category']
-       #swagger.summary = 'Get all category'
+       #swagger.summary = 'Get all categories'
        #swagger.description = 'Retrieve all categories for the user.'
        #swagger.responses[200] = {
-           description: 'category retrieved successfully',
+           description: 'Categories retrieved successfully',
            content: {
                'application/json': {
                    schema: {
@@ -48,10 +57,15 @@ categoryRouter.get('/',
            }
        }
     */
-    getAllCategoriesController);
+
+);
 
 // Delete a category by ID
-categoryRouter.delete('/:id', 
+categoryRouter.delete(
+    '/:id', 
+    requireAuthAPI,
+    remove
+
     /* #swagger.tags = ['Category']
        #swagger.summary = 'Delete a category'
        #swagger.description = 'Delete a category by its ID.'
@@ -64,17 +78,18 @@ categoryRouter.delete('/:id',
            description: 'ID of the category to delete'
        }
        #swagger.responses[200] = { 
-            description: 'category deleted successfully' }
+            description: 'Category deleted successfully',
             content: {
                 'application/json': {
-                   schema: {
-                       items: { $ref: '#/components/schemas/Category' }
-                   }
-                }               
+                    schema: { $ref: '#/components/schemas/Category' }
+                }
             }
-       #swagger.responses[404] = { description: 'category not found' }
+       }
+       #swagger.responses[404] = { description: 'Category not found' }
        #swagger.responses[400] = { description: 'Bad request' }
     */
-    deleteCategoryController);
+
+);
+
 
 export default categoryRouter;
