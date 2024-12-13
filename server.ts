@@ -49,13 +49,18 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-        secure: process.env.NODE_ENV === 'production'
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true, // Prevent client-side access
+        sameSite: 'lax', // Enable cross-origin cookie use
     },
     store: store,
     resave: false,
     saveUninitialized: false,
     name: 'sessionId'
 }));
+if (process.env.NODE_ENV === 'production'){
+    app.set('trust proxy', 1);
+}
 
 // Cross-Origin Resource Sharing
 app.use(cors({

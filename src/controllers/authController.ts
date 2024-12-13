@@ -126,8 +126,12 @@ async function auth(req: AuthRequest, res: Response): Promise<void> {
       name: userInfo.name || userInfo.login,
       email: userInfo.email,
     };
-
-    res.redirect('/home');
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+      }
+      res.redirect('/home');
+    });
     return;
   } catch (error) {
     console.error('Authentication error:', {
