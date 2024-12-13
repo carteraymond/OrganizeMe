@@ -27,21 +27,33 @@ const createCategory = async (name: string, colorHex: string, githubId: string) 
 };
 
 // 2. Update Category Service
-/*const updateCategory = async (id: string, name?: string, colorHex?: string) => {
+const updateCategory = async (id: string, name: string, colorHex: string, githubId: string) => {
   try {
-    const updateFields: { [key: string]: any } = {};
-    if (name) updateFields.name = name;
-    if (colorHex) updateFields.colorHex = colorHex;
+    // First find the user to get their _id
+    const user = await User.findOne({ githubId });
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-    // Update category by ID
-    const updatedCategory = await Category.findByIdAndUpdate(id, updateFields, { new: true });
+    // Find and update the category, ensuring it belongs to the user
+    const updatedCategory = await Category.findOneAndUpdate(
+      { _id: id, userId: user._id },
+      { name, colorHex },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedCategory) {
+      console.log('No category found to update');
+      return null;
+    }
+
     console.log('Category updated:', updatedCategory);
     return updatedCategory;
   } catch (err) {
     console.error('Error updating category:', err);
     throw new Error('Failed to update category');
   }
-};*/
+};
 
 // 3. Delete Category Service
 const deleteCategory = async (id: string) => {
@@ -59,21 +71,30 @@ const deleteCategory = async (id: string) => {
   }
 };
 
-// 4. Get Category by ID
-/*const getCategoryById = async (id: string) => {
+// 4. Get Category by ID Service
+const getCategoryById = async (id: string, githubId: string) => {
   try {
-    const category = await Category.findById(id);
+    // First find the user to get their _id
+    const user = await User.findOne({ githubId });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Find the category, ensuring it belongs to the user
+    const category = await Category.findOne({ _id: id, userId: user._id });
+    
     if (!category) {
-      console.log('Category not found');
+      console.log('No category found');
       return null;
     }
+
     console.log('Category found:', category);
     return category;
   } catch (err) {
-    console.error('Error finding category by ID:', err);
-    throw new Error('Failed to fetch category');
+    console.error('Error finding category:', err);
+    throw new Error('Failed to find category');
   }
-};*/
+};
 
 // 5. Get All Categories
 const getAllCategories = async (githubId: string) => {
@@ -96,4 +117,6 @@ export {
   createCategory,
   deleteCategory,
   getAllCategories,
+  updateCategory,
+  getCategoryById,
 };
