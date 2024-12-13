@@ -13,6 +13,7 @@
   "paths": {
     "/user": {
       "post": {
+
         "summary": "Create a new User",
         "tags": [ "User"],
         "requestBody": {
@@ -347,6 +348,7 @@
             }
           }
         },
+
         "responses": {
           "201": {
             "description": "category created successfully",
@@ -360,11 +362,16 @@
           },
           "400": {
             "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+
         }
       },
       "get": {
         "tags": [ "Category"],
+
         "summary": "Get all category",
         "description": "Retrieve all categories for the user.",
         "responses": {
@@ -380,45 +387,78 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/category/{id}": {
+    "/{id}": {
       "get": {
+
         "tags": [ "Category"],
         "summary": "Get a category by ID",
         "description": "Fetch a category by its unique ID.",
+
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The unique ID of the category"
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "category found",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
+
                   "$ref": "#/components/schemas/Category"
+
                 }
               }
             }
           },
           "404": {
-            "description": "category not found"
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "default": {
+            "description": ""
           }
         }
       },
       "delete": {
+
         "tags": [ "Category"],
+
         "summary": "Delete a category",
         "description": "Delete a category by its ID.",
         "parameters": [
@@ -430,20 +470,28 @@
             "schema": {
               "type": "string"
             },
+
             "description": "ID of the category",
             "content": {
               "application/json": {
                 "example": { "message": "Category deleted successfully"}
               }
             }
+
           }
         ],
         "responses": {
           "200": {
             "description": "category deleted successfully"
           },
+          "400": {
+            "description": "Bad request"
+          },
           "404": {
             "description": "category not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -630,5 +678,6 @@
         ]
       }
     }
+
   }
 }

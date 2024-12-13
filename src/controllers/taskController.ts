@@ -8,6 +8,7 @@ import {
 } from "../services/taskService";
 import { AuthRequest } from './authController';
 
+
 // Get userId from either session or API token
 const getUserId = (req: Request): string | null => {
     // If using API token find the user object that the auth middleware attached
@@ -19,8 +20,9 @@ const getUserId = (req: Request): string | null => {
     return userReq.session?.user?.id.toString() || null;
 };
 
+
 // Use the RequestHandler type to define the controller functions bc ts sucks
-export const create: RequestHandler = async (req, res, next) => {
+const create: RequestHandler = async (req, res, next) => {
     try {
         const userId = getUserId(req);
         if (!userId) {
@@ -52,7 +54,7 @@ export const create: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const update: RequestHandler = async (req, res, next) => {
+const update: RequestHandler = async (req, res, next) => {
     try {
         const userId = getUserId(req);
         if (!userId) {
@@ -86,7 +88,7 @@ export const update: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const getAll: RequestHandler = async (req, res, next) => {
+const getAll: RequestHandler = async (req, res, next) => {
     try {
         const userId = getUserId(req);
         if (!userId) {
@@ -108,7 +110,7 @@ export const getAll: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const getId: RequestHandler = async (req, res, next) => {
+const getId: RequestHandler = async (req, res, next) => {
     try {
         const userId = getUserId(req);
         if (!userId) {
@@ -131,10 +133,11 @@ export const getId: RequestHandler = async (req, res, next) => {
             error: "Failed to get task",
             details: (error as Error).message 
         });
+
     }
 };
 
-export const remove: RequestHandler = async (req, res, next) => {
+const remove: RequestHandler = async (req, res, next) => {
     try {
         const userId = getUserId(req);
         if (!userId) {
@@ -159,3 +162,5 @@ export const remove: RequestHandler = async (req, res, next) => {
         });
     }
 };
+export { create, update, getAll, getId, remove };
+

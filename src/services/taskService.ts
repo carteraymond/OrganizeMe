@@ -11,6 +11,7 @@ const createTask = async (
     tags: string[],
     categoryId?: string
 ) => {
+
     const newTask = new Task({
         title,
         description,
@@ -19,6 +20,7 @@ const createTask = async (
         priority,
         userId,
         tags,
+
         categoryId
     });
 
@@ -29,8 +31,10 @@ const createTask = async (
     } catch (err) {
         console.error('Error creating task:', err);
         throw err;
+
     }
 };
+
 
 const updateTask = async (
     id: string,
@@ -50,6 +54,7 @@ const updateTask = async (
         if (categoryId !== undefined) {
             updateFields.categoryId = categoryId === null ? null : new mongoose.Types.ObjectId(categoryId);
         }
+
 
         // Update task and populate category details
         const updatedTask = await Task.findByIdAndUpdate(
@@ -71,6 +76,7 @@ const updateTask = async (
 
 const deleteTask = async (id: string) => {
     try {
+
         const deletedTask = await Task.findByIdAndDelete(id);
         return deletedTask;
     } catch (err) {
@@ -78,6 +84,7 @@ const deleteTask = async (id: string) => {
         throw err;
     }
 };
+
 
 const getIdTask = async (id: string) => {
     try {
