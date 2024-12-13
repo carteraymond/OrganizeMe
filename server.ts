@@ -51,12 +51,15 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true, // Prevent client-side access
         sameSite: 'lax', // Enable cross-origin cookie use
-      },
+    },
     store: store,
     resave: false,
     saveUninitialized: false,
     name: 'sessionId'
 }));
+if (process.env.NODE_ENV === 'production'){
+    app.set('trust proxy', 1);
+}
 
 app.use((req, res, next) => {
     console.log('Session Middleware Initialized:', req.session);
