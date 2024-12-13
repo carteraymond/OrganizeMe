@@ -126,7 +126,8 @@ async function auth(req: AuthRequest, res: Response): Promise<void> {
       name: userInfo.name || userInfo.login,
       email: userInfo.email,
     };
-    console.log(`session Log: ${JSON.stringify(req.session.user)}`);
+    console.log(`Session in auth callback: ${JSON.stringify(req.session.user)}`);
+    console.log(`Session ID: ${req.sessionID}`);
     req.session.save((err) => {
       if (err) {
         console.error('Session save error:', err);

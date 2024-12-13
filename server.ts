@@ -48,14 +48,20 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-        secure: process.env.NODE_ENV === 'production'
-    },
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true, // Prevent client-side access
+        sameSite: 'lax', // Enable cross-origin cookie use
+      },
     store: store,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     name: 'sessionId'
 }));
 
+app.use((req, res, next) => {
+    console.log('Session Middleware Initialized:', req.session);
+    next();
+  });
 // Cross-Origin Resource Sharing
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DOMAIN : '*',
