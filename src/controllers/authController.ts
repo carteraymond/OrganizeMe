@@ -126,6 +126,7 @@ async function auth(req: AuthRequest, res: Response): Promise<void> {
       name: userInfo.name || userInfo.login,
       email: userInfo.email,
     };
+    console.log(`session Log: ${req.session.user}`);
 
     res.redirect('/home');
     return;
