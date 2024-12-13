@@ -1,0 +1,54 @@
+### Make task
+POST http://localhost:3000/task
+Content-Type: application/json
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+{
+  "title": "Complete Project",
+  "description": "Finish the API integration",
+  "dueDate": "2024-12-25",
+  "status": "pending",
+  "priority": "high",
+  "tags": ["work", "urgent"]
+}
+### Get All Tasks
+GET http://localhost:3000/task
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+### Get Task by ID
+GET http://localhost:3000/task/6758b61d239d9db7d0cca66d
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+### Update Task
+PUT http://localhost:3000/task/6758b61d239d9db7d0cca66d
+Content-Type: application/json
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+{
+  "title": "Updated Title",
+  "description": "Updated description",
+  "status": "in-progress"
+}
+
+### Delete Task
+DELETE http://localhost:3000/task/6758b61d239d9db7d0cca66d
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+### Create Category
+POST http://localhost:3000/category
+Content-Type: application/json
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+{
+  "name": "whatever",
+  "colorHex": "#FF5733"
+}
+
+
+### Get All Categories
+GET http://localhost:3000/category
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+
+### Delete Category
+DELETE http://localhost:3000/category/67591a5615263aeebe40b38b
+Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4

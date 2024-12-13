@@ -1,5 +1,5 @@
 import Task from '../models/task';
-
+import mongoose from 'mongoose';
 
 const createTask = async (
     title: string,
@@ -8,9 +8,10 @@ const createTask = async (
     status: string,
     priority: string,
     userId: string,
-    tags: string,
-    categoryId: string,
-) =>  {
+    tags: string[],
+    categoryId?: string
+) => {
+
     const newTask = new Task({
         title,
         description,
@@ -19,16 +20,18 @@ const createTask = async (
         priority,
         userId,
         tags,
-        categoryId,
+
+        categoryId
     });
 
     try {
-        const task = await newTask.save();
-        console.log('Task created:', task);
-        return task;  // return the saved task directly
+        const savedTask = await newTask.save();
+        console.log('Task created:', savedTask);
+        return savedTask;
     } catch (err) {
-        console.error(err);
-        return undefined;  // return undefined if save fails
+        console.error('Error creating task:', err);
+        throw err;
+
     }
 };
 
@@ -38,44 +41,47 @@ const updateTask = async (
     title?: string, 
     description?: string,
     status?: string,
-    tags?: string
-) =>  {
-    // Construct the update object dynamically
-    let updateFields: { [key: string]: string | undefined } = {};
-    if (title) updateFields.title = title;
-    if (description) updateFields.description = description;
-    if (status) updateFields.status = status;
-    if (tags) updateFields.tags = tags;
-
+    tags?: string[],
+    categoryId?: string | null
+) => {
     try {
-        const result = await Task.updateOne({ _id: id }, { $set: updateFields });
-        if (result.modifiedCount > 0) {
-            const updatedTask = await Task.findById(id);  // get the updated task after modifying
-            console.log('Task updated:', updatedTask);
-            return updatedTask;
-        } else {
-            console.log('No task was updated');
-            return undefined;
+        // Create update object
+        const updateFields: { [key: string]: any } = {};
+        if (title) updateFields.title = title;
+        if (description) updateFields.description = description;
+        if (status) updateFields.status = status;
+        if (tags) updateFields.tags = tags;
+        if (categoryId !== undefined) {
+            updateFields.categoryId = categoryId === null ? null : new mongoose.Types.ObjectId(categoryId);
         }
+
+
+        // Update task and populate category details
+        const updatedTask = await Task.findByIdAndUpdate(
+            id, 
+            { $set: updateFields },
+            { new: true }
+        ).populate({
+            path: 'categoryId',
+            select: 'name colorHex'
+        });
+        
+        return updatedTask;
     } catch (err) {
-        console.error(err);
-        return undefined;
+        console.error('Error updating task:', err);
+        throw err;
     }
 };
 
+
 const deleteTask = async (id: string) => {
     try {
-        const result = await Task.deleteOne({ _id: id });
-        if (result.deletedCount > 0) {
-            console.log('Task deleted:', id);
-            return { message: "Task successfully deleted" };
-        } else {
-            console.log('No task found with the given ID.');
-            return null;
-        }
+
+        const deletedTask = await Task.findByIdAndDelete(id);
+        return deletedTask;
     } catch (err) {
-        console.error(err);
-        return null;
+        console.error('Error deleting task:', err);
+        throw err;
     }
 };
 
@@ -83,35 +89,28 @@ const deleteTask = async (id: string) => {
 const getIdTask = async (id: string) => {
     try {
         const task = await Task.findById(id);
-        if (task) {
-            console.log('Task found:', task);
-            return task;
-        } else {
-            console.log('No task found with the given ID.');
-            return undefined;
-        }
+        return task;
     } catch (err) {
-        console.error(err);
-        return undefined;
+        console.error('Error finding task:', err);
+        throw err;
     }
 };
 
-const getAllTask = async () => {
+
+const getAllTask = async (userId: string) => {
     try {
-        const task = await Task.find({});
-        if (task.length > 0) {
-            console.log('Task found:', task);
-            return task;
-        } else {
-            console.log('No task found.');
-            return [];
-        }
+        // Return tasks for the specific user and populate category details
+        const tasks = await Task.find({ userId })
+            .populate({
+                path: 'categoryId',
+                select: 'name colorHex' // Only select the fields we need
+            });
+        return tasks;
     } catch (err) {
-        console.error(err);
-        return [];
+        console.error('Error finding tasks:', err);
+        throw err;
     }
 };
-
 
 export {
     createTask,
@@ -119,4 +118,4 @@ export {
     deleteTask,
     getIdTask,
     getAllTask
-}
+};
