@@ -127,8 +127,12 @@ async function auth(req: AuthRequest, res: Response): Promise<void> {
       email: userInfo.email,
     };
     console.log(`session Log: ${JSON.stringify(req.session.user)}`);
-
-    res.redirect('/home');
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+      }
+      res.redirect('/home');
+    });
     return;
   } catch (error) {
     console.error('Authentication error:', {
