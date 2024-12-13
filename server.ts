@@ -52,7 +52,7 @@ app.use(session({
     },
     store: store,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     name: 'sessionId'
 }));
 
