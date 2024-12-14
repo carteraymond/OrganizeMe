@@ -31,7 +31,7 @@
       "description": "Operations related to logs"
     },
     {
-      "name": "Tags",
+      "name": "Tag",
       "description": "Operations related to tags"
     }
   ],
