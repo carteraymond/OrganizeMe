@@ -4,11 +4,14 @@ import {
     updateProfile, 
     updateUserCanvasToken,
     deleteAccount,
-    getAllUsers 
+    getAllUsers,
+    createUser
 } from '../controllers/userController';
 import { requireAuth, requireAuthAPI } from '../middleware/authMiddleware';
 
 const userRouter = express.Router();
+
+userRouter.post('/', requireAuthAPI, createUser);
 
 /**
  * @swagger

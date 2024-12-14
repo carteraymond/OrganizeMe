@@ -5,6 +5,43 @@ interface ProfileUpdateData {
     email?: string;
 }
 
+interface CreateUserData {
+    githubId: string;
+    username: string;
+    displayName: string;
+    email?: string;
+    profileImgUrl?: string;
+}
+
+// Create new user
+export const createUserProfile = async (userData: CreateUserData) => {
+    try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ githubId: userData.githubId });
+        if (existingUser) {
+            throw new Error('User with this GitHub ID already exists');
+        }
+
+        // Create new user instance
+        const user = new User({
+            githubId: userData.githubId,
+            username: userData.username,
+            displayName: userData.displayName,
+            email: userData.email,
+            profileImgUrl: userData.profileImgUrl,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+
+        // Save the user to database
+        await user.save();
+        return user;
+    } catch (error) {
+        console.error('Error in createUser:', error);
+        throw error;
+    }
+};
+
 // Get user profile by GitHub ID
 export const getUserProfile = async (githubId: string) => {
     try {
@@ -73,7 +110,6 @@ export const deleteUserAccount = async (githubId: string) => {
     }
 };
 
-// Get all users (for admin purposes)
 export const getAllUserProfiles = async () => {
     try {
         return await User.find({}).sort({ createdAt: -1 });

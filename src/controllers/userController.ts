@@ -1,12 +1,107 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { AuthRequest } from './authController';
 import { 
     updateUserProfile, 
     deleteUserAccount, 
     getUserProfile, 
     getAllUserProfiles,
-    updateCanvasToken
+    updateCanvasToken,
+    createUserProfile
 } from '../services/userService';
+
+interface CreateUserRequest extends Request {
+    body: {
+        githubId: string;
+        username: string;
+        displayName: string;
+        email?: string;
+        profileImgUrl?: string;
+    }
+}
+
+function isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function isValidUrl(url: string): boolean {
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export const createUser = async (
+    req: CreateUserRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const userData = req.body;
+
+        // Validate required fields
+        if (!userData.githubId || !userData.username || !userData.displayName) {
+            res.status(400).json({
+                success: false,
+                error: 'Missing required fields: githubId, username, and displayName are required'
+            });
+            return;
+        }
+
+        // Validate GitHub ID format
+        if (!/^\d+$/.test(userData.githubId)) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid GitHub ID format'
+            });
+            return;
+        }
+
+        // Validate email format if provided
+        if (userData.email && !isValidEmail(userData.email)) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid email format'
+            });
+            return;
+        }
+            
+        // Validate URL format for profile image if provided
+        if (userData.profileImgUrl && !isValidUrl(userData.profileImgUrl)) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid profile image URL format'
+            });
+            return;
+        }
+
+        // Create user
+        const user = await createUserProfile(userData);
+
+        res.status(201).json({
+            success: true,
+            data: user
+        });
+
+    } catch (error) {
+        // Handle specific errors
+        if (error instanceof Error && error.message === 'User with this GitHub ID already exists') {
+            res.status(409).json({
+                success: false,
+                error: 'User with this GitHub ID already exists'
+            });
+            return;
+        }
+
+        // Log the error for debugging
+        console.error('Error in createUser:', error);
+
+        // Pass error to Express error handler
+        next(error);
+    }
+};
 
 const getUserId = (req: Request): string | null => {
     // Check API token auth first (set by requireAuthAPI middleware)
