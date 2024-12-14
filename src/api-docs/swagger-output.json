@@ -574,11 +574,6 @@
       "post": {
         "tags": ["Tag"],
         "summary": "Create a new tag",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -614,11 +609,6 @@
       "get": {
         "tags": ["Tag"],
         "summary": "Get all tags",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "responses": {
           "200": {
             "description": "List of tags retrieved successfully"
@@ -633,11 +623,6 @@
       "get": {
         "tags": ["Tag"],
         "summary": "Get a tag by ID",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "parameters": [
           {
             "name": "id",
@@ -664,11 +649,6 @@
       "put": {
         "tags": ["Tag"],
         "summary": "Update a tag",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "parameters": [
           {
             "name": "id",
@@ -713,11 +693,6 @@
       "delete": {
         "tags": ["Tag"],
         "summary": "Delete a tag",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "parameters": [
           {
             "name": "id",
