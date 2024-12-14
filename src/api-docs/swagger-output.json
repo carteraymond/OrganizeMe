@@ -49,24 +49,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "githubId": {
+                    "type": "string",
+                    "example": "12345678"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "exampleuser"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "example": "Example User"
+                  },
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                   },
-                  "passwordHash": {
-                    "type": "string"
-                  },
-                  "firstName": {
-                    "type": "string"
-                  },
-                  "lastName": {
-                    "type": "string"
+                  "profileImgUrl": {
+                    "type": "string",
+                    "example": "https://example.com/profile.jpg"
                   }
                 },
                 "required": [
-                  "email",
-                  "passwordHash",
-                  "firstName",
-                  "lastName"
+                  "githubId",
+                  "username",
+                  "displayName"
                 ]
               }
             }
@@ -109,26 +116,15 @@
         }
       }
     },
-    "/user/{id}": {
+    "/user/profile": {
       "get": {
-        "summary": "Get a user by ID",
+        "summary": "Get your user profile",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "tags": [ "User" ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "User ID",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "A single user",
@@ -146,24 +142,13 @@
         }
       },
       "put": {
-        "summary": "Update a user by ID",
+        "summary": "Update your user profile",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "tags": [ "User" ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "User ID",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -171,17 +156,17 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "displayName": {
+                    "type": "string",
+                    "example": "Example User"
+                  },
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                   },
-                  "passwordHash": {
-                    "type": "string"
-                  },
-                  "firstName": {
-                    "type": "string"
-                  },
-                  "lastName": {
-                    "type": "string"
+                  "profileImgUrl": {
+                    "type": "string",
+                    "example": "https://example.com/profile.jpg"
                   }
                 }
               }
@@ -201,24 +186,13 @@
         }
       },
       "delete": {
-        "summary": "Delete a user by ID",
+        "summary": "Delete your account",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "tags": [ "User" ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "User ID",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "User deleted"
