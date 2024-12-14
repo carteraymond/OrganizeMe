@@ -594,7 +594,7 @@
                     "example": ["work", "urgent"]
                   }
                 },
-                "required": []
+                "required": ["tags"]
               }
             }
           }
@@ -640,7 +640,7 @@
         ],
         "parameters": [
           {
-            "ID": "id",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -671,7 +671,7 @@
         ],
         "parameters": [
           {
-            "ID": "id",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -689,9 +689,11 @@
                 "properties": {
                   "tags": {
                     "type": "string",
-                    "example": "Updated Tags"
+                    "example": ["tag1", "tag2", "tag3"],
+                    "description": "Array of strings representing the updated tags"
                   }
-                }
+                },
+                "required": ["tags"]
               }
             }
           }
@@ -718,7 +720,7 @@
         ],
         "parameters": [
           {
-            "ID": "id",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {

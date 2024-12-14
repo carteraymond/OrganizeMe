@@ -24,6 +24,7 @@ const create: RequestHandler = async (req, res, next) => {
 const update: RequestHandler = async (req, res, next) => {
     try {
         const updatedTag = await updateTag(
+            req.params.id,
             req.body.tags
         );
 

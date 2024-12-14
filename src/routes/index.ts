@@ -29,7 +29,7 @@ router.use('/user', requireAuthAPI, userRouter);
 router.use('/task', requireAuthAPI, taskRouter);
 router.use('/category', requireAuthAPI, categoryRouter);
 router.use('/log', requireAuthAPI, logRouter);
-router.use('/tag', requireAuthAPI, tagRouter);
+router.use('/tag', tagRouter);
 
 // Default redirect to auth if not logged in
 router.get('/', (req: Request, res: Response): void => {
