@@ -67,8 +67,10 @@ const update: RequestHandler = async (req, res, next) => {
 			req.params.id,
 			req.body.title,
 			req.body.description,
+			req.body.dueDate,
 			req.body.status,
-			req.body.tags
+			req.body.tags,
+			req.body.categoryId
 		);
 
 		if (!updatedTask) {

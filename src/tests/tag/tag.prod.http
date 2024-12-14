@@ -1,0 +1,23 @@
+### Get All tags
+GET https://organizeme-xtcl.onrender.com/tag HTTP/1.1;
+
+### Get tag by Id
+GET https://organizeme-xtcl.onrender.com/tag/675cfe5a8b3051de6b4f87f5 HTTP/1.1
+
+### Create tag 
+POST https://organizeme-xtcl.onrender.com/tag
+
+content-type: application/json
+{
+    "tags":"School, Homework, Project",
+}
+### Update tag
+PUT https://organizeme-xtcl.onrender.com/tag/675cfe5a8b3051de6b4f87f5 HTTP/1.1
+
+Content-Type: application/json
+
+{
+    "tags":"School, stuff, Project",
+}
+### Delete tag
+DELETE https://organizeme-xtcl.onrender.com/tag/675cfe5a8b3051de6b4f87f5 HTTP/1.1

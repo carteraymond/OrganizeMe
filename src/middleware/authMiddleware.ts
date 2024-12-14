@@ -26,17 +26,14 @@ export const requireAuthAPI: RequestHandler = async (
 
     // First check for API token in header
     const authHeader = req.headers.authorization;
-    // Make sure the header exists and starts with 'Bearer ' (the api token type)
-    // idk if this is really necessary, but the dude on stackoverflow said to do it
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7); // Skip the first 7 characters ('Bearer ')
+    if (authHeader) {
         try {
             // Find user by token
-            const user = await User.findOne({ 'apiTokens.token': token });
+            const user = await User.findOne({ 'apiTokens.token': authHeader });
             if (user) {
                 // Update last used timestamp
                 await User.updateOne(
-                    { 'apiTokens.token': token },
+                    { 'apiTokens.token': authHeader },
                     { $set: { 'apiTokens.$.lastUsed': new Date() } }
                 );
                 

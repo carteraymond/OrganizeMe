@@ -1,6 +1,9 @@
 import { version } from 'mongoose';
 import swaggerAutogen from 'swagger-autogen';
 
+const OPTIONS = {
+  openapi: '3.0.0',
+};
 const doc = {
   info: {
     title: 'OrganizeMe API',
@@ -9,6 +12,17 @@ const doc = {
   },
   host: 'organizeme-xtcl.onrender.com',
   schemes: ["https"],
+  securityDefinitions: {
+    bearerAuth: {
+      type: 'apiKey',
+      in: 'header',
+      name: 'Authorization',
+      description: 'Enter your API token with the `Bearer` prefix, e.g. "Bearer abcdef123456"'
+    }
+  },
+  security: [{
+    bearerAuth: []
+  }],
   components: {
     schemas: {
       User: {
@@ -171,6 +185,6 @@ const endpointsFiles = [
   '../routes/log.ts'
 ]; 
 
-swaggerAutogen()(outputFile, endpointsFiles, doc).then(() => {
+swaggerAutogen(OPTIONS)(outputFile, endpointsFiles, doc).then(() => {
   console.log('Swagger documentation generated successfully!');
 });
