@@ -105,7 +105,7 @@ userRouter.put('/canvas-token', requireAuthAPI, updateUserCanvasToken);
  *       401:
  *         description: Not authenticated
  */
-userRouter.delete('/account', requireAuth, deleteAccount);
+userRouter.delete('/profile', requireAuth, deleteAccount);
 
 /**
  * @swagger
@@ -122,6 +122,6 @@ userRouter.delete('/account', requireAuth, deleteAccount);
  *       401:
  *         description: Not authenticated
  */
-userRouter.get('/all', requireAuthAPI, getAllUsers);
+userRouter.get('/', requireAuthAPI, getAllUsers);
 
 export default userRouter;
