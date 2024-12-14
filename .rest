@@ -1,7 +1,7 @@
 ### Make task
 POST http://localhost:3000/task
 Content-Type: application/json
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 {
   "title": "Complete Project",
@@ -13,16 +13,16 @@ Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d
 }
 ### Get All Tasks
 GET http://localhost:3000/task
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 ### Get Task by ID
 GET http://localhost:3000/task/6758b61d239d9db7d0cca66d
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 ### Update Task
 PUT http://localhost:3000/task/6758b61d239d9db7d0cca66d
 Content-Type: application/json
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 {
   "title": "Updated Title",
@@ -32,12 +32,44 @@ Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d
 
 ### Delete Task
 DELETE http://localhost:3000/task/6758b61d239d9db7d0cca66d
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
+
+### Get Current User
+GET http://localhost:3000/user/profile
+Authorization: Bearer 2b8de2a3c56597cd154d9f77e5541e20e577363c182c6e09fac2111c30a113a6
+
+### Get All users
+GET http://localhost:3000/user/all
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
+
+### Update user
+PUT http://localhost:3000/user/profile
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
+Content-Type: application/json
+
+{
+  "displayName": "John Smith", 
+  "email": "john.smith@example.com"
+}
+
+### Update Canvas Token
+PUT http://localhost:3000/user/canvas-token
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
+Content-Type: application/json
+
+{
+  "canvasToken": "<your-canvas-token>"
+}
+
+
+### Delete user
+DELETE http://localhost:3000/user/account
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 ### Create Category
 POST http://localhost:3000/category
 Content-Type: application/json
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 {
   "name": "whatever",
@@ -47,8 +79,8 @@ Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d
 
 ### Get All Categories
 GET http://localhost:3000/category
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa
 
 ### Delete Category
 DELETE http://localhost:3000/category/67591a5615263aeebe40b38b
-Authorization: Bearer 264e1cc4714adc68b887f6699cf7869a615f92ccd0c49590eb736eb09d502bb4
+Authorization: Bearer b8aac184f7876f4ded33a0a22c60c3864caba0d83a8ccc5cebbefaf6f03330aa

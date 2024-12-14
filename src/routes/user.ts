@@ -1,141 +1,124 @@
-import { create, getAll, getById, remove, update } from '../controllers/userController';
 import express from 'express';
+import { 
+    getCurrentUser, 
+    updateProfile, 
+    updateUserCanvasToken,
+    deleteAccount,
+    getAllUsers 
+} from '../controllers/userController';
+import { requireAuth, requireAuthAPI } from '../middleware/authMiddleware';
 
 const userRouter = express.Router();
 
-// Create a new user
 /**
  * @swagger
- * /user:
- *   post:
- *     summary: Create a new user
- *     tags: [User]
- *     description: Create a new user in the system.
- *     requestBody:
- *       description: User object that needs to be created.
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       201:
- *         description: User created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       400:
- *         description: Bad request
+ * tags:
+ *   name: User
+ *   description: User management endpoints
  */
-userRouter.post('/', create);
 
-// Get all users
 /**
  * @swagger
- * /user:
+ * /user/profile:
  *   get:
- *     summary: Get all users
+ *     summary: Get current user profile
  *     tags: [User]
- *     description: Retrieve all users from the system.
+ *     security:
+ *       - BearerAuth: []
+ *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: List of users
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *         description: User profile retrieved successfully
+ *       401:
+ *         description: Not authenticated
  */
-userRouter.get('/', getAll);
+userRouter.get('/profile', requireAuthAPI, getCurrentUser);
 
-// Get a user by ID
 /**
  * @swagger
- * /user/{id}:
- *   get:
- *     summary: Get a user by ID
- *     tags: [User]
- *     description: Fetch a user by their ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the user
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: User found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       404:
- *         description: User not found
- */
-userRouter.get('/:id', getById);
-
-// Update a user by ID
-/**
- * @swagger
- * /user/{id}:
+ * /user/profile:
  *   put:
- *     summary: Update a user by ID
+ *     summary: Update user profile
  *     tags: [User]
- *     description: Update the details of an existing user by their ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the user to update
- *         schema:
- *           type: string
+ *     security:
+ *       - BearerAuth: []
+ *       - SessionAuth: []
  *     requestBody:
- *       description: User object with updated details
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               displayName:
+ *                 type: string
+ *               email:
+ *                 type: string
  *     responses:
  *       200:
- *         description: User updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       400:
- *         description: Bad request
- *       404:
- *         description: User not found
+ *         description: Profile updated successfully
+ *       401:
+ *         description: Not authenticated
  */
-userRouter.put('/:id', update);
+userRouter.put('/profile', requireAuthAPI, updateProfile);
 
-///Delete a user by ID
 /**
  * @swagger
- * /user/{id}:
- *   delete:
- *     summary: Delete a user by ID
+ * /user/canvas-token:
+ *   put:
+ *     summary: Update Canvas API token
  *     tags: [User]
- *     description: Delete a user by their ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the user to delete
- *         schema:
- *           type: string
+ *     security:
+ *       - BearerAuth: []
+ *       - SessionAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               canvasToken:
+ *                 type: string
  *     responses:
  *       200:
- *         description: User deleted successfully
- *       404:
- *         description: User not found
- *       400:
- *         description: Bad request
+ *         description: Canvas token updated successfully
+ *       401:
+ *         description: Not authenticated
  */
-userRouter.delete('/:id', remove);
+userRouter.put('/canvas-token', requireAuthAPI, updateUserCanvasToken);
+
+/**
+ * @swagger
+ * /user/account:
+ *   delete:
+ *     summary: Delete user account
+ *     tags: [User]
+ *     security:
+ *       - SessionAuth: []
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully
+ *       401:
+ *         description: Not authenticated
+ */
+userRouter.delete('/account', requireAuth, deleteAccount);
+
+/**
+ * @swagger
+ * /user/all:
+ *   get:
+ *     summary: Get all users (admin only)
+ *     tags: [User]
+ *     security:
+ *       - BearerAuth: []
+ *       - SessionAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *       401:
+ *         description: Not authenticated
+ */
+userRouter.get('/all', requireAuthAPI, getAllUsers);
 
 export default userRouter;

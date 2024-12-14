@@ -1,73 +1,156 @@
 import { Request, Response } from 'express';
-import { createUser, updateUser, deleteUser, getUserById, getAllUsers } from '../services/userService';
+import { AuthRequest } from './authController';
+import { 
+    updateUserProfile, 
+    deleteUserAccount, 
+    getUserProfile, 
+    getAllUserProfiles,
+    updateCanvasToken
+} from '../services/userService';
 
-// Create User
-const create = async (req: Request, res: Response) => {
-    try {
-        const newUser = await createUser(
-            req.body.email,
-            req.body.password,
-            req.body.firstName,
-            req.body.lastName
-        );
-        res.status(201).send(newUser);
-    } catch (error) {
-        res.status(500).send({ error: 'Failed to create user' });
+const getUserId = (req: Request): string | null => {
+    // Check API token auth first (set by requireAuthAPI middleware)
+    if ((req as any).user?.id) {
+        return (req as any).user.id;
     }
+    // Fall back to session auth
+    const userReq = req as AuthRequest;
+    return userReq.session?.user?.id?.toString() || null;
 };
 
-// Update User
-const update = async (req: Request, res: Response) => {
-    try {
-        const updatedUser = await updateUser(req.body.firstName, req.body.lastName);
-        res.send(updatedUser);
-    } catch (error) {
-        res.status(500).send({ error: 'Failed to update user' });
+// Get Current User Profile
+export const getCurrentUser = async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+    
+    if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
     }
-};
 
-// Get All Users
-const getAll = async (req: Request, res: Response) => {
     try {
-        const users = await getAllUsers();
-        res.send(users);
-    } catch (error) {
-        res.status(500).send({ error: 'Failed to retrieve users' });
-    }
-};
-
-// Get User by ID
-const getById = async (req: Request, res: Response) => {
-    try {
-        const user = await getUserById(req.params.id);
+        const user = await getUserProfile(userId);
         if (user) {
-            res.send(user);
+            // Remove sensitive information
+            const userProfile = {
+                username: user.username,
+                displayName: user.displayName,
+                email: user.email,
+                profileImgUrl: user.profileImgUrl,
+                hasCanvasToken: !!user.canvasToken
+            };
+            res.json(userProfile);
         } else {
-            res.status(404).send({ error: 'User not found' });
+            res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        res.status(500).send({ error: 'Failed to retrieve user' });
+        console.error('Error getting user profile:', error);
+        res.status(500).json({ error: 'Failed to retrieve user profile' });
     }
 };
 
-// Delete User
-const remove = async (req: Request, res: Response) => {
+// Update User Profile
+export const updateProfile = async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+    const { displayName, email } = req.body;
+
+    if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+    }
+
     try {
-        const deletedUser = await deleteUser(req.params.id);
-        if (deletedUser != null) {
-            res.send({ message: 'User deleted successfully' });
+        const updatedUser = await updateUserProfile(
+            userId,
+            { displayName, email }
+        );
+        if (updatedUser) {
+            res.json({
+                message: 'Profile updated successfully',
+                user: {
+                    displayName: updatedUser.displayName,
+                    email: updatedUser.email
+                }
+            });
         } else {
-            res.status(404).send({ error: 'User not found' });
+            res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        res.status(500).send({ error: 'Failed to delete user' });
+        console.error('Error updating profile:', error);
+        res.status(500).json({ error: 'Failed to update profile' });
     }
 };
 
-export {
-    create,
-    update,
-    getAll,
-    getById,
-    remove,
-}
+// Update Canvas Token
+export const updateUserCanvasToken = async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+    const { canvasToken } = req.body;
+
+    if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+    }
+
+    try {
+        const updated = await updateCanvasToken(
+            userId, 
+            canvasToken
+        );
+        if (updated) {
+            res.json({ message: 'Canvas token updated successfully' });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error updating canvas token:', error);
+        res.status(500).json({ error: 'Failed to update canvas token' });
+    }
+};
+
+// Delete Account
+export const deleteAccount = async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+
+    if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+    }
+
+    try {
+        const deleted = await deleteUserAccount(userId);
+        if (deleted) {
+            // If using session auth, clear the session
+            const userReq = req as AuthRequest;
+            if (userReq.session) {
+                req.session.destroy((err) => {
+                    if (err) {
+                        console.error('Error destroying session:', err);
+                    }
+                });
+            }
+            res.json({ message: 'Account deleted successfully' });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        res.status(500).json({ error: 'Failed to delete account' });
+    }
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await getAllUserProfiles();
+        // Remove sensitive information
+        const userProfiles = users.map(user => ({
+            id: user.githubId,
+            username: user.username,
+            displayName: user.displayName,
+            profileImgUrl: user.profileImgUrl,
+            createdAt: user.createdAt
+        }));
+        res.json(userProfiles);
+    } catch (error) {
+        console.error('Error getting all users:', error);
+        res.status(500).json({ error: 'Failed to retrieve users' });
+    }
+};

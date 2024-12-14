@@ -1,113 +1,84 @@
 import User from '../models/user';
 
-
-const createUser = async (
-    email: string, 
-    password: string, 
-    firstName: string, 
-    lastName: string
-    ) =>  {
-    
-    // Create new User Model 
-    const newUser = new User({
-        email: email,
-        passwordHash: password,
-        firstName: firstName,
-        lastName: lastName,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    });
-
-    // Save new User Model
-    let isSaved = false;
-    await newUser.save()
-    .then(user => {
-        console.log('User created:', user);
-        isSaved = true;
-    })
-    .catch(err => console.error(err));
-    
-    if (isSaved) return newUser;
-    else return undefined;
-};
-
-const updateUser = async (
-    id: string,
-    firstName?: string, 
-    lastName?: string
-) =>  {
-    // Construct the update object dynamically
-    let updateFields: { [key: string]: string | undefined } = {};
-    if (firstName) updateFields.firstName = firstName;
-    if (lastName) updateFields.lastName = lastName;
-
-    // Save new User Model
-    let isSaved = false;
-    let updatedUser = await User.updateOne({ _id: id }, { $set: updateFields }) // This
-    .then(user => {
-        console.log('User updated:', user);
-        isSaved = true;
-    })
-    .catch(err => console.error(err));
-    
-    if (isSaved) return updatedUser;
-    else return undefined;
-};
-
-const deleteUser = async (id: string) => {
-    let isDeleted = false;
-    let deletedUser = await User.deleteOne({ _id: id })
-    .then(result => {
-        if (result.deletedCount > 0) {
-            console.log('User deleted:', result);
-            isDeleted = true;
-        } else {
-            console.log('No user found with the given ID.');
-        }
-    })
-    .catch(err => console.error(err));
-    
-    if (isDeleted) return deletedUser;
-    else return undefined;
-};
-
-const getUserById = async (id: string) => {
-    try {
-        const user = await User.findById(id);
-        if (user) {
-            console.log('User found:', user);
-            return user;
-        } else {
-            console.log('No user found with the given ID.');
-            return undefined;
-        }
-    } catch (err) {
-        console.error(err);
-        return undefined;
-    }
-};
-
-const getAllUsers = async () => {
-    try {
-        const users = await User.find({});
-        if (users.length > 0) {
-            console.log('Users found:', users);
-            return users;
-        } else {
-            console.log('No users found.');
-            return [];
-        }
-    } catch (err) {
-        console.error(err);
-        return [];
-    }
-};
-
-
-export {
-    createUser,
-    updateUser,
-    deleteUser,
-    getUserById,
-    getAllUsers
+interface ProfileUpdateData {
+    displayName?: string;
+    email?: string;
 }
+
+// Get user profile by GitHub ID
+export const getUserProfile = async (githubId: string) => {
+    try {
+        return await User.findOne({ githubId });
+    } catch (error) {
+        console.error('Error in getUserProfile:', error);
+        throw error;
+    }
+};
+
+// Update user profile
+export const updateUserProfile = async (
+    githubId: string, 
+    updateData: ProfileUpdateData
+) => {
+    try {
+        const user = await User.findOne({ githubId });
+        if (!user) return null;
+
+        if (updateData.displayName) {
+            user.displayName = updateData.displayName;
+        }
+        if (updateData.email) {
+            user.email = updateData.email;
+        }
+
+        user.updatedAt = new Date();
+        await user.save();
+        return user;
+    } catch (error) {
+        console.error('Error in updateUserProfile:', error);
+        throw error;
+    }
+};
+
+// Update Canvas token
+export const updateCanvasToken = async (
+    githubId: string, 
+    canvasToken: string
+) => {
+    try {
+        const result = await User.updateOne(
+            { githubId },
+            { 
+                $set: { 
+                    canvasToken,
+                    updatedAt: new Date()
+                }
+            }
+        );
+        return result.modifiedCount > 0;
+    } catch (error) {
+        console.error('Error in updateCanvasToken:', error);
+        throw error;
+    }
+};
+
+// Delete user account
+export const deleteUserAccount = async (githubId: string) => {
+    try {
+        const result = await User.deleteOne({ githubId });
+        return result.deletedCount > 0;
+    } catch (error) {
+        console.error('Error in deleteUserAccount:', error);
+        throw error;
+    }
+};
+
+// Get all users (for admin purposes)
+export const getAllUserProfiles = async () => {
+    try {
+        return await User.find({}).sort({ createdAt: -1 });
+    } catch (error) {
+        console.error('Error in getAllUserProfiles:', error);
+        throw error;
+    }
+};
