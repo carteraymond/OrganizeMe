@@ -36,6 +36,11 @@
       "post": {
 
         "summary": "Create a new User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [ "User"],
         "requestBody": {
           "required": true,
@@ -1097,7 +1102,8 @@
             }
           }
         }
-      },
+      }
+    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "apiKey",
@@ -1105,8 +1111,7 @@
         "name": "Authorization",
         "description": "Enter your API token with the `Bearer` prefix, e.g. \"Bearer abcdef123456\""
       }
-    }
-  },
+    },
   "security": [
     {
       "bearerAuth": []
