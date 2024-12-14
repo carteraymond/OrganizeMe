@@ -1,6 +1,7 @@
 import express from 'express';
-import { create, getAll, remove } from '../controllers/categoryController';
+import { create, getAll, update, getId, remove } from '../controllers/categoryController';
 import { requireAuthAPI } from '../middleware/authMiddleware';
+import { get } from 'mongoose';
 
 const categoryRouter = express.Router();
 
@@ -58,6 +59,16 @@ categoryRouter.get(
        }
     */
 
+);
+categoryRouter.get(
+    '/:id', 
+    requireAuthAPI,
+    getId
+);
+categoryRouter.put(
+    '/:id', 
+    requireAuthAPI,
+    update
 );
 
 // Delete a category by ID
