@@ -110,7 +110,7 @@ async function auth(req: AuthRequest, res: Response): Promise<void> {
       method: 'get',
       url: 'https://api.github.com/user',
       headers: {
-        Authorization: access_token,
+        Authorization: `Bearer ${access_token}`,
         Accept: 'application/json',
       },
     });
