@@ -29,6 +29,10 @@
     {
       "name": "Logs",
       "description": "Operations related to logs"
+    },
+    {
+      "name": "Tags",
+      "description": "Operations related to tags"
     }
   ],
   "paths": {
@@ -570,7 +574,178 @@
         }
       }
   },
-    "/log": {
+    "/tag": {
+      "post": {
+        "tags": ["Tag"],
+        "summary": "Create a new tag",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["work", "urgent"]
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tag created successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "400": {
+            "description": "Bad request - Invalid input"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tag"],
+        "summary": "Get all tags",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tags retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/tag/{id}": {
+      "get": {
+        "tags": ["Tag"],
+        "summary": "Get a tag by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "ID": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "6758b61d239d9db7d0cca66d"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tag"],
+        "summary": "Update a tag",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "ID": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "6758b61d239d9db7d0cca66d"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tags": {
+                    "type": "string",
+                    "example": "Updated Tags"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tag"],
+        "summary": "Delete a tag",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "ID": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "6758b61d239d9db7d0cca66d"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      }
+    }
+  },
+  "/log": {
       "get": {
         "tags": [
           "Logs"
@@ -593,8 +768,7 @@
           }
         }
       }
-    }
-  },
+    },
   "components": {
     "schemas": {
       "User": {

@@ -9,6 +9,7 @@ import categoryRouter from './category';
 import logRouter from './log';
 import { requireAuth, requireAuthAPI } from '../middleware/authMiddleware';
 import tokenRouter from './token';
+import tagRouter from './tag';
 
 const router = express.Router();
 
@@ -28,6 +29,7 @@ router.use('/user', requireAuthAPI, userRouter);
 router.use('/task', requireAuthAPI, taskRouter);
 router.use('/category', requireAuthAPI, categoryRouter);
 router.use('/log', requireAuthAPI, logRouter);
+router.use('/tag', requireAuthAPI, tagRouter);
 
 // Default redirect to auth if not logged in
 router.get('/', (req: Request, res: Response): void => {
