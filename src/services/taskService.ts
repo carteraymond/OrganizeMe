@@ -20,7 +20,6 @@ const createTask = async (
         priority,
         userId,
         tags,
-
         categoryId
     });
 
@@ -38,8 +37,9 @@ const createTask = async (
 
 const updateTask = async (
     id: string,
-    title?: string, 
+    title?: string,
     description?: string,
+    dueDate?: Date,
     status?: string,
     tags?: string[],
     categoryId?: string | null
@@ -49,16 +49,16 @@ const updateTask = async (
         const updateFields: { [key: string]: any } = {};
         if (title) updateFields.title = title;
         if (description) updateFields.description = description;
+        if (dueDate) updateFields.dueDate = dueDate;
         if (status) updateFields.status = status;
         if (tags) updateFields.tags = tags;
         if (categoryId !== undefined) {
             updateFields.categoryId = categoryId === null ? null : new mongoose.Types.ObjectId(categoryId);
         }
 
-
         // Update task and populate category details
         const updatedTask = await Task.findByIdAndUpdate(
-            id, 
+            id,
             { $set: updateFields },
             { new: true }
         ).populate({
