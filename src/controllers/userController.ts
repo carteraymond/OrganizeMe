@@ -104,11 +104,11 @@ export const createUser = async (
 };
 
 const getUserId = (req: Request): string | null => {
-    // Check API token auth first (set by requireAuthAPI middleware)
-    if ((req as any).user?.id) {
-        return (req as any).user.id;
+    // If using API token auth
+    if ((req as any).user?.githubId) {
+        return (req as any).user.githubId;
     }
-    // Fall back to session auth
+    // If using session auth
     const userReq = req as AuthRequest;
     return userReq.session?.user?.id?.toString() || null;
 };
