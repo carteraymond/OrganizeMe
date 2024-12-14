@@ -5,7 +5,7 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "tsx server.ts",
     "swagger": "tsx ./src/api-docs/swagger.ts"
   },
@@ -13,10 +13,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
     "@types/ejs": "^3.1.5",
     "@types/express-session": "^1.18.0",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.7",
     "swagger-autogen": "^2.23.7",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
