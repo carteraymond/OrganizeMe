@@ -83,6 +83,11 @@
       },
       "get": {
         "summary": "Get all users",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [ "User" ],
         "responses": {
           "200": {
@@ -107,6 +112,11 @@
     "/user/{id}": {
       "get": {
         "summary": "Get a user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [ "User" ],
         "parameters": [
           {
@@ -137,6 +147,11 @@
       },
       "put": {
         "summary": "Update a user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [ "User" ],
         "parameters": [
           {
@@ -187,6 +202,11 @@
       },
       "delete": {
         "summary": "Delete a user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": [ "User" ],
         "parameters": [
           {
@@ -519,6 +539,11 @@
       "put": {
         "tags": ["Category"],
         "summary": "Update a category",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1084,7 +1109,7 @@
         "type": "apiKey",
         "in": "header",
         "name": "Authorization",
-        "description": "Enter your API token with the `Bearer` prefix, e.g. \"Bearer abcdef123456\""
+        "description": "Enter your API token."
       }
     },
   "security": [
