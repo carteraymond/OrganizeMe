@@ -1,14 +1,35 @@
 {
-   "openapi": "3.0.0",
-    "info": {
+  "openapi": "3.0.0",
+  "info": {
     "title": "OrganizeMe API",
     "version": "1.0.0",
     "description": "API documentation for the OrganizeMe project"
   },
-  "host": "organizeme-xtcl.onrender.com",
-  "basePath": "/",
-  "schemes": [
-    "https"
+  "servers": [
+    {
+      "url": "https://organizeme-xtcl.onrender.com/"
+    },
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "Operations related to users"
+    },
+    {
+      "name": "Task",
+      "description": "Operations related to tasks"
+    },
+    {
+      "name": "Category",
+      "description": "Operations related to category"
+    },
+    {
+      "name": "Logs",
+      "description": "Operations related to logs"
+    }
   ],
   "paths": {
     "/user": {
@@ -184,65 +205,100 @@
       }
     },
     "/task": {
-      "get": {
-        "summary": "Get all tasks",
-        "tags": [
-          "Task"
-        ],
-        "description": "Get all the tasks",
-        "responses": {
-          "200": {
-            "description": "A list of tasks",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Task"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
-        "tags": [
-          "Task"
-        ],
+        "tags": ["Task"],
         "summary": "Create a new task",
-        "description": "Creates a new task.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Task"
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Complete project"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Finish the API integration"
+                  },
+                  "dueDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-12-25"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "in-progress", "completed"],
+                    "example": "pending"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"],
+                    "example": "high"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["work", "urgent"]
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "675c9d1b2f3ab22d87c83ec5"
+                  }
+                },
+                "required": ["title", "description"]
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Task created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
-              }
-            }
+            "description": "Task created successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "400": {
+            "description": "Bad request - Invalid input"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Task"],
+        "summary": "Get all tasks",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tasks retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
           }
         }
       }
     },
     "/task/{id}": {
       "get": {
-        "tags": [
-          "Task"
+        "tags": ["Task"],
+        "summary": "Get a task by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "summary": "Get a single task",
-        "description": "Retrieves a single task by its ID.",
         "parameters": [
           {
             "name": "id",
@@ -251,31 +307,29 @@
             "schema": {
               "type": "string"
             },
-            "description": "The ID of the task to retrieve."
+            "example": "6758b61d239d9db7d0cca66d"
           }
         ],
         "responses": {
           "200": {
-            "description": "Task details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
-              }
-            }
+            "description": "Task retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
           },
           "404": {
-            "description": "Task not found."
+            "description": "Task not found"
           }
         }
       },
       "put": {
-        "tags": [
-          "Task"
-        ],
+        "tags": ["Task"],
         "summary": "Update a task",
-        "description": "Updates a task by its ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -284,7 +338,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The ID of the task to update."
+            "example": "6758b61d239d9db7d0cca66d"
           }
         ],
         "requestBody": {
@@ -292,26 +346,46 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Task"
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Updated Title"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Updated description"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "in-progress", "completed"],
+                    "example": "in-progress"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Task updated successfully."
+            "description": "Task updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
           },
           "404": {
-            "description": "Task not found."
+            "description": "Task not found"
           }
         }
       },
       "delete": {
-        "tags": [
-          "Task"
-        ],
+        "tags": ["Task"],
         "summary": "Delete a task",
-        "description": "Deletes a task by its ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -320,182 +394,182 @@
             "schema": {
               "type": "string"
             },
-            "description": "The ID of the task to delete."
+            "example": "6758b61d239d9db7d0cca66d"
           }
         ],
         "responses": {
           "200": {
-            "description": "Task deleted successfully."
+            "description": "Task deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
           },
           "404": {
-            "description": "Task not found."
+            "description": "Task not found"
           }
         }
       }
     },
     "/category": {
       "post": {
-        "tags": [ "Category"],
+        "tags": ["Category"],
         "summary": "Create a new category",
-        "description": "Create a new category for a user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Category"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Work"
+                  },
+                  "colorHex": {
+                    "type": "string",
+                    "pattern": "^#[0-9A-Fa-f]{6}$",
+                    "example": "#FF5733"
+                  }
+                },
+                "required": ["name", "colorHex"]
               }
             }
           }
         },
-
         "responses": {
           "201": {
-            "description": "category created successfully",
+            "description": "Category created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Category"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-
-        }
-      },
-      "get": {
-        "tags": [ "Category"],
-
-        "summary": "Get all category",
-        "description": "Retrieve all categories for the user.",
-        "responses": {
-          "200": {
-            "description": "category retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Category"
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "colorHex": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad Request"
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
           },
-          "500": {
-            "description": "Internal Server Error"
+          "400": {
+            "description": "Bad request - Invalid input"
           }
         }
-      }
-    },
-    "/{id}": {
+      },
       "get": {
-
-        "tags": [ "Category"],
-        "summary": "Get a category by ID",
-        "description": "Fetch a category by its unique ID.",
-
-        "parameters": [
+        "tags": ["Category"],
+        "summary": "Get all categories",
+        "security": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
+            "bearerAuth": []
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "List of categories retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-
-                  "$ref": "#/components/schemas/Category"
-
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "colorHex": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               }
             }
           },
-          "404": {
-            "description": "User not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "default": {
-            "description": ""
-          }
-        }
-      },
-      "delete": {
-
-        "tags": [ "Category"],
-
-        "summary": "Delete a category",
-        "description": "Delete a category by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "schema": {
-              "type": "string"
-            },
-
-            "description": "ID of the category",
-            "content": {
-              "application/json": {
-                "example": { "message": "Category deleted successfully"}
-              }
-            }
-
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "category deleted successfully"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "404": {
-            "description": "category not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
           }
         }
       }
     },
+    "/category/{id}": {
+      "put": {
+        "tags": ["Category"],
+        "summary": "Update a category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Work"
+                  },
+                  "colorHex": {
+                    "type": "string",
+                    "pattern": "^#[0-9A-Fa-f]{6}$",
+                    "example": "#FF5733"
+                  }
+                },
+                "required": ["name", "colorHex"]
+              }
+            }
+          }
+        }
+      },
+      
+      "delete": {
+        "tags": ["Category"],
+        "summary": "Delete a category",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "67591a5615263aeebe40b38b"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      }
+  },
     "/log": {
       "get": {
         "tags": [
@@ -526,158 +600,488 @@
       "User": {
         "type": "object",
         "properties": {
-          "email": {
+          "type": {
             "type": "string",
-            "description": "Email of the user"
+            "example": "object"
           },
-          "passwordHash": {
-            "type": "string",
-            "description": "The password of the user"
+          "properties": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Email of the user"
+                  }
+                }
+              },
+              "passwordHash": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The password of the user"
+                  }
+                }
+              },
+              "firstName": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "User's first name"
+                  }
+                }
+              },
+              "lastName": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "User's last name"
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Date of User creation"
+                  }
+                }
+              },
+              "updateAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Timestamp when the user was last updated"
+                  }
+                }
+              }
+            }
           },
-          "firstName": {
-            "type": "string",
-            "description": "User's first name"
-          },
-          "lastName": {
-            "type": "string",
-            "description": "User's last name"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Date of User creation"
-          },
-          "updateAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Timestamp when the user was last updated"
+          "required": {
+            "type": "array",
+            "example": [
+              "email",
+              "passwordHash",
+              "firstName",
+              "lastName"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "required": ["email", "passwordHash", "firstName", "lastName" ] 
+        }
       },
       "Task": {
         "type": "object",
         "properties": {
-          "_id": {
+          "type": {
             "type": "string",
-            "description": "The unique identifier for the task"
+            "example": "object"
           },
-          "title": {
-            "type": "string",
-            "description": "The title of the task"
-          },
-          "description": {
-            "type": "string",
-            "description": "Details about the task"
-          },
-          "dueDate": {
-            "type": "string",
-            "format": "date",
-            "description": "The due date of the task"
-          },
-          "status": {
-            "type": "string",
-            "description": "The current status of the task",
-            "enum": [
-              "pending",
-              "in-progress",
-              "completed"
-            ],
-            "default": "pending"
-          },
-          "priority": {
-            "type": "string",
-            "description": "The priority level of the task",
-            "enum": [
-              "low",
-              "medium",
-              "high"
-            ],
-            "default": "medium"
-          },
-          "userId": {
-            "type": "string",
-            "description": "The identifier of the user who owns the task."
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Unique identifier for the category associated with the taks"
+          "properties": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The title of the task"
+                  }
+                }
+              },
+              "description": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Details about the task"
+                  }
+                }
+              },
+              "dueDate": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The due date of the task"
+                  }
+                }
+              },
+              "status": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The current status of the task"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "pending",
+                      "in-progress",
+                      "completed"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "default": {
+                    "type": "string",
+                    "example": "pending"
+                  }
+                }
+              },
+              "priority": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The priority level of the task"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "low",
+                      "medium",
+                      "high"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "default": {
+                    "type": "string",
+                    "example": "medium"
+                  }
+                }
+              },
+              "userId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The identifier of the user who owns the task."
+                  }
+                }
+              },
+              "tags": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "Unique identifier for the category associated with the taks"
+                      }
+                    }
+                  }
+                }
+              },
+              "categoryId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Identifier for category this task belongs to"
+                  }
+                }
+              }
             }
           },
-          "categoryId": {
-            "type": "string",
-            "description": "Identifier for category this task belongs to"
+          "required": {
+            "type": "array",
+            "example": [
+              "title",
+              "description",
+              "dueDate",
+              "priority"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "required": [ "title", "description", "dueDate", "priority" ]
+        }
       },
       "Category": {
         "type": "object",
         "properties": {
-          "name": {
+          "type": {
             "type": "string",
-            "description": "The name of the category"
+            "example": "object"
           },
-          "colorHex": {
-            "type": "string",
-            "description": "The hex color code for the category",
-            "example": "#FF5733"
+          "properties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The name of the category"
+                  }
+                }
+              },
+              "colorHex": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The hex color code for the category"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "#FF5733"
+                  }
+                }
+              },
+              "userId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The ID of the user who owns this category"
+                  }
+                }
+              }
+            }
           },
-          "userId": {
-            "type": "string",
-            "description": "The ID of the user who owns this category"
+          "required": {
+            "type": "array",
+            "example": [
+              "name",
+              "colorHex",
+              "userId"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "required": [
-          "name",
-          "colorHex",
-          "userId"
-        ]
+        }
       },
       "Log": {
         "type": "object",
         "properties": {
-          "_id": {
+          "type": {
             "type": "string",
-            "description": "The unique identifier for the log"
+            "example": "object"
           },
-          "userId": {
-            "type": "string",
-            "description": "The ID of the user who performed the action"
+          "properties": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The unique identifier for the log"
+                  }
+                }
+              },
+              "userId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The ID of the user who performed the action"
+                  }
+                }
+              },
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The type of action performed"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "CREATE",
+                      "UPDATE",
+                      "DELETE"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "targetType": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The type of entity the action was performed on"
+                  }
+                }
+              },
+              "targetId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The ID of the target entity"
+                  }
+                }
+              },
+              "timestamp": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "The timestamp when the action occurred"
+                  }
+                }
+              }
+            }
           },
-          "action": {
-            "type": "string",
-            "description": "The type of action performed",
-            "enum": [
-              "CREATE",
-              "UPDATE",
-              "DELETE"
-            ]
-          },
-          "targetType": {
-            "type": "string",
-            "description": "The type of entity the action was performed on"
-          },
-          "targetId": {
-            "type": "string",
-            "description": "The ID of the target entity"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "description": "The timestamp when the action occurred"
+          "required": {
+            "type": "array",
+            "example": [
+              "userId",
+              "action",
+              "targetType",
+              "targetId"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "required": [
-          "userId",
-          "action",
-          "targetType",
-          "targetId"
-        ]
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter your API token with the `Bearer` prefix, e.g. \"Bearer abcdef123456\""
       }
     }
-
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }
