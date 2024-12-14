@@ -27,10 +27,6 @@
       "description": "Operations related to category"
     },
     {
-      "name": "Logs",
-      "description": "Operations related to logs"
-    },
-    {
       "name": "Tag",
       "description": "Operations related to tags"
     }
@@ -745,30 +741,6 @@
       }
     }
   },
-  "/log": {
-      "get": {
-        "tags": [
-          "Logs"
-        ],
-        "summary": "Get all logs",
-        "description": "Retrieve all logs.",
-        "responses": {
-          "200": {
-            "description": "Logs retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Log"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
   "components": {
     "schemas": {
       "User": {
@@ -1124,126 +1096,6 @@
           }
         }
       },
-      "Log": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "object"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "The unique identifier for the log"
-                  }
-                }
-              },
-              "userId": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "The ID of the user who performed the action"
-                  }
-                }
-              },
-              "action": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "The type of action performed"
-                  },
-                  "enum": {
-                    "type": "array",
-                    "example": [
-                      "CREATE",
-                      "UPDATE",
-                      "DELETE"
-                    ],
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "targetType": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "The type of entity the action was performed on"
-                  }
-                }
-              },
-              "targetId": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "The ID of the target entity"
-                  }
-                }
-              },
-              "timestamp": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "format": {
-                    "type": "string",
-                    "example": "date-time"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "The timestamp when the action occurred"
-                  }
-                }
-              }
-            }
-          },
-          "required": {
-            "type": "array",
-            "example": [
-              "userId",
-              "action",
-              "targetType",
-              "targetId"
-            ],
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "apiKey",
@@ -1258,4 +1110,5 @@
       "bearerAuth": []
     }
   ]
+}
 }
