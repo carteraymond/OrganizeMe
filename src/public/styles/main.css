@@ -169,18 +169,20 @@ h1 {
 }
 
 .modal-content {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90%;
     max-width: 600px;
+    max-height: 90vh;
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 1rem;
     padding: 2rem;
+    overflow-y: auto;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
